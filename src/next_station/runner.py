@@ -3,23 +3,27 @@ from requests.exceptions import HTTPError
 import time
 
 def check_server(api_url: str,
+                 method: str,
                  query: str | None = None,
                  max_retries: int = 3
-                 ) -> bool:
+                 ) -> requests.Respone | None:
 
     for i in range(max_retries):
         
-        try: 
+        try:
 
-            response = requests.head(
-                url = api_url,
-                params = query,
-                allow_redirects = True
-            )
+            if method == 'head':
+                response = requests.head(url = api_url, params = query, allow_redirects = True)
+
+            if method == 'get':
+                response = requests.get(url = api_url, allow_redirects = True)
+            
+            if method == 'post':
+                response = requests.post(url = api_url, data = query)
             
             response.raise_for_status()
 
-            return True
+            return response
             
 
         except HTTPError:
@@ -27,7 +31,7 @@ def check_server(api_url: str,
             if response.status_code == 400:
                 print(f"Failed!: \n{response.text}")
 
-                return False
+                return None
 
             if response.status_code in (429, 500, 501, 502, 503, 504):
                    
@@ -40,6 +44,6 @@ def check_server(api_url: str,
 
             print(f"Other error occurred: {err}")
 
-            return False
+            return None
 
-        return False
+        return None
