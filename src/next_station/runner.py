@@ -16,10 +16,10 @@ def runner(api_url: str,
             if method == 'head':
                 response = requests.head(url = api_url, params = query, allow_redirects = True)
 
-            if method == 'get':
+            elif method == 'get':
                 response = requests.get(url = api_url, allow_redirects = True, stream = stream)
             
-            if method == 'post':
+            elif method == 'post':
                 response = requests.post(url = api_url, data = query, stream = stream)
             
             response.raise_for_status()
@@ -29,12 +29,12 @@ def runner(api_url: str,
 
         except HTTPError:
             
-            if response.status_code == 400:
+            if response.status_code in (400, 404):
                 print(f"Failed!: \n{response.text}")
 
                 return None
 
-            if response.status_code in (429, 500, 501, 502, 503, 504):
+            elif response.status_code in (429, 500, 501, 502, 503, 504):
                    
                 time.sleep((i + 1) * 4)
                 print(f"Status code: {response.status_code}, retrying...")
