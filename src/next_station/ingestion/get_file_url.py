@@ -2,7 +2,7 @@ from .runner import runner
 from schemas.worldpop import GetFileUrl, FileUrl
 
 def get_file_url(api_url: str,
-                 index: int
+                 index: int = -1
                  ) -> str:
 
     response = runner(api_url, 'get')
