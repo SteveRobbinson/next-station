@@ -1,37 +1,19 @@
 from .runner import runner
-import boto3
-from botocore.exceptions import ClientError
+from schemas.worldpop import ApiMetadata, S3Etag
+from pydantic import ValidationError
 
-def compare_metadata(bucket_name: str,
-                     file_name_on_s3:str,
+def compare_metadata(s3_metadata: dict,
                      file_url: str
                     ) -> bool:
 
     try:
 
         api_response = runner(file_url, 'head')
+        api_etag = ApiMetadata(**api_response.headers).api_metadata
 
-        s3 = boto3.client('s3')
-        aws_response = s3.head_object(
-            Bucket = bucket_name,
-            Key = file_name_on_s3
-        )
+        aws_s3_etag = S3Etag(**s3_metadata).s3_etag
 
-        aws_s3_metadata = aws_response['Metadata']['etag']
-        api_metadata = api_response.headers['ETag'].strip('"')
-        
-        if aws_s3_metadata == api_metadata:
-            return True
-
+        return aws_s3_etag == api_etag
     
-    except ClientError as e:
-
-        if int(e.response['Error']['Code']) == 404:
-            return False
-
-
-    except (AttributeError, KeyErro) as err:
-        print(f"Check if ETag exists at API response headers \n{err}")
-    
-
-    return False
+    except ValidationError:
+        return False
