@@ -1,4 +1,4 @@
-from pydantic import BaseModel, BeforeValidator, Field, ConfigDict, AliasChoices, AfterValidator
+from pydantic import BaseModel, BeforeValidator, Field, ConfigDict, AliasChoices, AfterValidator, ValidationError, AliasPath
 from typing import Annotated
 
 def ensure_one_element(value: any) -> str:
@@ -45,3 +45,8 @@ class ApiMetadata(BaseModel):
     etag: Annotated[str,
                     Field(validation_alias=AliasChoices('ETag', 'etag', 'Etag')),
                     AfterValidator(ensure_string)]
+
+### Extract S3 file etag
+
+class S3Etag(BaseModel):
+    s3_etag: Annotated[str, AfterValidator(ensure_string), Field(AliasPath('Metadata', 'ETag'))]
