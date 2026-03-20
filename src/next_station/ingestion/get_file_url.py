@@ -1,5 +1,5 @@
 from .runner import runner
-from schemas.worldpop import GetFileUrl, FileUrl
+from src.next_station.schemas.worldpop import GetFileUrl, FileUrl
 
 def get_file_url(api_url: str,
                  index: int = -1
