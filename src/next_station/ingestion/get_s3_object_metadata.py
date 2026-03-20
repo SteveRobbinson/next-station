@@ -3,17 +3,16 @@ from mypy_boto3_s3 import S3Client
 from botocore.exceptions import ClientError
 from src.next_station.ingestion.exceptions import S3ServiceError, S3AccessDeniedError, S3NotFoundError
 
-def fetch_s3_client(s3client: S3Client,
-                    bucket_name: str,
-                    file_name_on_s3: str
-                    ) -> dict:
+def get_s3_object_metadata(s3client: S3Client,
+                           bucket_name: str,
+                           file_name_on_s3: str
+                           ) -> dict:
 
     try:
         
         aws_response = s3client.head_object(
             Bucket = bucket_name,
-            Key = file_name_on_s3
-        )
+            Key = file_name_on_s3)
 
         return aws_response
 
