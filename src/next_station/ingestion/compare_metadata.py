@@ -1,5 +1,5 @@
 from .runner import runner
-from schemas.worldpop import ApiMetadata, S3Etag
+from src.next_station.schemas.worldpop import ApiMetadata, S3Etag
 from pydantic import ValidationError
 
 def compare_metadata(s3_metadata: dict,
