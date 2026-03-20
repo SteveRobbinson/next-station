@@ -6,7 +6,8 @@ def runner(api_url: str,
            method: str,
            stream: bool | None = None,
            query: str | None = None,
-           max_retries: int = 3
+           max_retries: int = 3,
+           timeout: int = 60
            ) -> requests.Response:
 
     for i in range(max_retries):
@@ -14,13 +15,13 @@ def runner(api_url: str,
         try:
 
             if method == 'head':
-                response = requests.head(url = api_url, params = query, allow_redirects = True, timeout = 10)
+                response = requests.head(url = api_url, params = query, allow_redirects = True, timeout = timeout)
 
             elif method == 'get':
-                response = requests.get(url = api_url, allow_redirects = True, stream = stream, timeout = 10)
+                response = requests.get(url = api_url, allow_redirects = True, stream = stream, timeout = timeout)
             
             elif method == 'post':
-                response = requests.post(url = api_url, data = query, stream = stream, timeout = 10)
+                response = requests.post(url = api_url, data = query, stream = stream, timeout = timeout)
             
             response.raise_for_status()
 
