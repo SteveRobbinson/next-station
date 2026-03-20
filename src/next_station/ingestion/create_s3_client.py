@@ -1,7 +1,7 @@
 import boto3
 from mypy_boto3_s3 import S3Client
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError, NoRegionError, EndpointConnectionError
-from exceptions import S3ConfigError, S3ConnectionError
+from .exceptions import S3ConfigError, S3ConnectionError
 
 def create_s3_client() -> S3Client:
 
