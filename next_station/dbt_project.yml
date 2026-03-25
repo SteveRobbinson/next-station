@@ -1,0 +1,23 @@
+name: next_stations
+
+profile: next_station
+
+seed-paths: ["seeds"]
+model-paths: ["models"]
+macro-paths: ["macros"]
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+seeds:
+  # Builds seeds into '<your_schema_name>_raw'
+  next_station:
+    +schema: raw
+
+models:
+  next_station:
+    +static_analysis: strict
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
