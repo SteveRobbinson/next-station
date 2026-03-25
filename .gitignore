@@ -10,4 +10,10 @@ __pycache__/
 .ipynb_checkpoints
 notebooks/
 
+# dbt
+next_station/dbt_packages/
+next_station/dbt_internal_packages/
+next_station/logs/
+next_station/target/
+
 
