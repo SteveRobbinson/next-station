@@ -1,5 +1,4 @@
-from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import concat_ws
+from pyspark.sql import DataFrame
 
 def save_df_in_db(df: DataFrame,
                   databricks_address: tuple[str, str, str],
@@ -10,6 +9,5 @@ def save_df_in_db(df: DataFrame,
     (df.write
     .format(save_format)
     .mode(save_mode)
-    .option('mergeSchema', True)
     .saveAsTable('.'.join(databricks_address))
      )
