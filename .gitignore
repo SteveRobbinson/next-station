@@ -16,4 +16,5 @@ dbt_project/dbt_internal_packages/
 dbt_project/logs/
 dbt_project/target/
 
-
+#pyproject
+*.egg-info
