@@ -9,11 +9,14 @@ class Settings(BaseSettings):
     aws_bucket_name: str
     aws_railway_stations_file_name: str
     aws_population_grid_file_name: str
+    aws_population_grid_metadata_file:str
     aws_s3_bucket_address: str
     aws_railway_file_explode_by: str
     databricks_catalog: str
     databricks_schema: str
     databricks_railway_table: str
     databricks_population_table: str
+    databricks_sql_user_name: str
+    databricks_python_user_name: str
 
 settings = Settings()
