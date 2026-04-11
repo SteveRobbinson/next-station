@@ -102,16 +102,38 @@ def compare_metadata(s3_metadata: dict,
 
 def upload_data_to_s3(bucket_name: str,
                       file_name: str,
-                      object_to_upload: requests.Response,
+                      object_to_upload: requests.Response | List[io.BytesIO],
                       s3_client: S3Client,
                       metadata: dict | None = None
                       ) -> bool:
 
     extra_args = {'Metadata': metadata} if metadata else {}
+    to_upload = []
 
-    s3_client.upload_fileobj(Bucket = bucket_name,
-                             Fileobj = object_to_upload.raw,
-                             Key = file_name,
-                             ExtraArgs = extra_args)
+    if isinstance(object_to_upload, requests.Response):
+        to_upload.append((file_name, object_to_upload.raw))
+        
+    else:
+
+        for i, buffer in enumerate(object_to_upload):
+            to_upload.append((f"{file_name}_chunk_{i + 1}.tif", buffer))
+
+    
+    for key, fileobj in to_upload:
+
+        s3_client.upload_fileobj(Bucket = bucket_name,
+                                 Fileobj = fileobj,
+                                 Key = key,
+                                 ExtraArgs = extra_args)
+        
+    if metadata:
+
+        metadata_content = json.dumps(metadata).encode('utf-8')
+        s3_client.put_object(
+            Bucket = bucket_name,
+            Key = f"{file_name}_metadata.json",
+            Body = metadata_content
+            )
 
     return True
+
