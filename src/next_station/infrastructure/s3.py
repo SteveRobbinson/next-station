@@ -1,3 +1,6 @@
+import requests
+import logging
+import json
 import boto3
 from mypy_boto3_s3 import S3Client
 from botocore.exceptions import (
@@ -19,8 +22,8 @@ from src.next_station.core.exceptions import (
 from .runner import runner
 from src.next_station.schemas.worldpop import ApiMetadata, S3Etag
 from pydantic import ValidationError
-from requests import Response
-
+from typing import List
+import io
 
 
 def create_s3_client() -> S3Client:
@@ -41,6 +44,7 @@ def create_s3_client() -> S3Client:
         raise S3ConnectionError(f"AWS S3 - Could not connect to the endpoint. Please check your internet or AWS service status") from ece
 
 
+logger = logging.getLogger(__name__)
 
 def get_s3_object_metadata(s3client: S3Client,
                            bucket_name: str,
