@@ -1,13 +1,9 @@
 from pyspark.sql import DataFrame
 
 def save_df_in_db(df: DataFrame,
-                  databricks_address: tuple[str, str, str],
+                  table_name: str,
                   save_format: str = 'delta',
                   save_mode: str = 'overwrite'):
 
 
-    (df.write
-    .format(save_format)
-    .mode(save_mode)
-    .saveAsTable('.'.join(databricks_address))
-     )
+    df.write.format(save_format).mode(save_mode).saveAsTable(table_name)
