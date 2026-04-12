@@ -25,14 +25,13 @@ s3 = create_s3_client()
 population_grid_file_url = get_file_url(settings.population_grid_url)
 
 s3_object_metadata = get_s3_object_metadata(s3,
-                                            settings.aws_bucket_name,
-                                            settings.aws_population_grid_metadata_file)
+                                            settings.absolute_population_grid_path.parent)
 
 is_metadata_same = compare_metadata(s3_object_metadata, population_grid_file_url)
 
 
 if not is_metadata_same:
-    logger.info(f"Metadata mismatch for {settings.aws_population_grid_file_name}. Downloading new dataset...")
+    logger.info(f"Metadata mismatch for {settings.absolute_population_grid_path.name}. Downloading new dataset...")
 
     population_grid = fetch_population_grid(population_grid_file_url)
 
@@ -40,13 +39,13 @@ if not is_metadata_same:
     
     sliced_dataset = slice_dataset(population_grid)
 
-    upload_data_to_s3(settings.aws_bucket_name,
-                      settings.aws_population_grid_file_name,
+    upload_data_to_s3(settings.absolute_population_grid_path.parent,
+                      settings.absolute_population_grid_path.name,
                       sliced_dataset,
                       s3,
                       metadata)
     
-    logger.info(f"Successfully updated dataset: {settings.aws_population_grid_file_name}")
+    logger.info(f"Successfully updated dataset: {settings.absolute_population_grid_path.name}")
 
 else:
-    logger.info(f"Dataset {aws.population_grid_file_name} is up-to-date. Skipping download")
+    logger.info(f"Dataset {settings.absolute_population_grid_path.name} is up-to-date. Skipping download")
