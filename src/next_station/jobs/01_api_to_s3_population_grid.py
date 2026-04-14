@@ -1,24 +1,14 @@
-import boto3
 from src.next_station.infrastructure.s3 import (
     create_s3_client,
     get_s3_object_metadata,
     compare_metadata,
     upload_data_to_s3
 )
-
 from src.next_station.core.config import settings
 from src.next_station.schemas.worldpop import ApiMetadata
 from src.next_station.providers.get_file_url import get_file_url
 from src.next_station.providers.fetch_population_grid import fetch_population_grid
-import logging
 from src.next_station.infrastructure.slice_dataset import slice_dataset
-
-logger = logging.getLogger(__name__)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 
 s3 = create_s3_client()
 
@@ -31,7 +21,6 @@ is_metadata_same = compare_metadata(s3_object_metadata, population_grid_file_url
 
 
 if not is_metadata_same:
-    logger.info(f"Metadata mismatch for {settings.absolute_population_grid_path.name}. Downloading new dataset...")
 
     population_grid = fetch_population_grid(population_grid_file_url)
 
@@ -44,8 +33,3 @@ if not is_metadata_same:
                       sliced_dataset,
                       s3,
                       metadata)
-    
-    logger.info(f"Successfully updated dataset: {settings.absolute_population_grid_path.name}")
-
-else:
-    logger.info(f"Dataset {settings.absolute_population_grid_path.name} is up-to-date. Skipping download")
