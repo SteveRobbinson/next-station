@@ -101,8 +101,8 @@ def compare_metadata(s3_metadata: dict,
 
 
 
-def upload_data_to_s3(bucket_name: PurePosixPath,
-                      file_name: PurePosixPath,
+def upload_data_to_s3(bucket_name: str,
+                      file_name: str,
                       object_to_upload: requests.Response | List[io.BytesIO],
                       s3_client: S3Client,
                       metadata: dict | None = None
@@ -112,7 +112,7 @@ def upload_data_to_s3(bucket_name: PurePosixPath,
     to_upload = []
 
     if isinstance(object_to_upload, requests.Response):
-        to_upload.append((f"{file_name}", object_to_upload.raw))
+        to_upload.append((file_name, object_to_upload.raw))
         
     else:
 
@@ -122,7 +122,7 @@ def upload_data_to_s3(bucket_name: PurePosixPath,
     
     for key, fileobj in to_upload:
 
-        s3_client.upload_fileobj(Bucket = f"{bucket_name}",
+        s3_client.upload_fileobj(Bucket = bucket_name,
                                  Fileobj = fileobj,
                                  Key = key,
                                  ExtraArgs = extra_args)
@@ -131,7 +131,7 @@ def upload_data_to_s3(bucket_name: PurePosixPath,
 
         metadata_content = json.dumps(metadata).encode('utf-8')
         s3_client.put_object(
-                Bucket = f"{bucket_name}",
+                Bucket = bucket_name,
                 Key = f"{file_name}/metadata.json",
                 Body = metadata_content
                 )
