@@ -1,7 +1,6 @@
-from src.next_station.providers.fetch_train_stations import fetch_train_stations
+from src.next_station.providers.fetch_railway_stations import fetch_train_stations
 from src.next_station.core.config import settings
 from src.next_station.infrastructure.s3 import create_s3_client, upload_data_to_s3
-import boto3
 import logging
 
 logger = logging.getLogger(__name__)
