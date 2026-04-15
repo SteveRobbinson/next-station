@@ -50,11 +50,16 @@ def runner(api_url: str,
 
             return response
             
-
         except HTTPError as err:
             
             if response.status_code in (400, 404):
-                raise ValueError(f"WorldPop API - Invalid {method.upper()} request to {api_url}\nStatus code: {response.status_code}\nDetails: {response.text}") from err
+                raise ApiRequestError(f"Invalid {method} request to {api_url}\nStatus code: {response.status_code}\nDetails: {response.text}") from err
+
+            elif response.status_code == 401:
+                raise ApiUnauthorizedError(f"Your {method} request to {api_url} failed!\nStatus code: {response.status_code}\nDetails: {response.text}") from err
+
+            elif response.status_code == 403:
+                raise ApiForbiddenRequest(f"Your access to {api_url} was denied!\nStatus code: {response.status_code}\nDetails: {response.text}") from err
 
             elif response.status_code in (429, 500, 501, 502, 503, 504):
                 if i == max_retries - 1:
