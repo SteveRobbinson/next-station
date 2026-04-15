@@ -1,3 +1,5 @@
+import requests
+
 # S3 errors
 class S3ServiceError(Exception):
     """Base class for S3 related errors."""
@@ -26,12 +28,12 @@ class S3NotFoundError(S3ServiceError):
 # API Errors
 class ApiError(Exception):
     """Base class for API requests related errors """
-    def __init__(self, response):
+    def __init__(self, response: requests.Response, title: str ='API Error'):
         self.response = response
         self.status_code = response.status_code
         self.text = response.text
 
-        message = f"API Error: {self.status_code}\n Details: {self.text[:200]}"
+        message = f"{title}. Status code: {self.status_code}\nDetails: {self.text[:200]}"
         super().__init__(message)
 
 class ApiRequestError(ApiErrors):
