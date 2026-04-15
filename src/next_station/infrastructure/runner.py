@@ -63,7 +63,12 @@ def runner(api_url: str,
 
             elif response.status_code in (429, 500, 501, 502, 503, 504):
                 if i == max_retries - 1:
-                    raise ConnectionError(f"WorldPop API - Max retries reached. Status code: {response.status_code}\nDetails: {response.text}") from err
+                    
+                    if response.status_code == 429:
+                        raise ApiRateLimitError(f"You've sent too many requests in a short time! Status code: 429\nDetails: {response.text}") from err
+
+                    else:
+                        raise ApiConnectionError(f"Max retries reached. Status code: {response.status_code}\nDetails: {response.text}") from err
 
                 time.sleep((i + 1) * 4)
                 continue
