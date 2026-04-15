@@ -5,7 +5,7 @@ from src.next_station.core.config import settings
 from src.next_station.core.exceptions import (
         ApiRequestError,
         ApiUnauthorizedError,
-        ApiForbiddenRequest,
+        ApiForbiddenRequestError,
         ApiConnectionError,
         ApiRateLimitError,
         ApiUnhandledError
@@ -53,27 +53,27 @@ def runner(api_url: str,
         except HTTPError as err:
             
             if response.status_code in (400, 404):
-                raise ApiRequestError(f"Invalid {method} request to {api_url}\nStatus code: {response.status_code}\nDetails: {response.text}") from err
+                raise ApiRequestError(response) from err
 
             elif response.status_code == 401:
-                raise ApiUnauthorizedError(f"Your {method} request to {api_url} failed!\nStatus code: {response.status_code}\nDetails: {response.text}") from err
+                raise ApiUnauthorizedError(response) from err
 
             elif response.status_code == 403:
-                raise ApiForbiddenRequest(f"Your access to {api_url} was denied!\nStatus code: {response.status_code}\nDetails: {response.text}") from err
+                raise ApiForbiddenRequestError(response) from err
 
             elif response.status_code in (429, 500, 501, 502, 503, 504):
                 if i == max_retries - 1:
                     
                     if response.status_code == 429:
-                        raise ApiRateLimitError(f"You've sent too many requests in a short time! Status code: 429\nDetails: {response.text}") from err
+                        raise ApiRateLimitError(response) from err
 
                     else:
-                        raise ApiConnectionError(f"Max retries reached. Status code: {response.status_code}\nDetails: {response.text}") from err
+                        raise ApiConnectionError(response) from err
 
                 time.sleep((i + 1) * 4)
                 continue
 
             else:
-                raise ApiUnhandledError(f"Unhandled HTTPError: {response.status_code}\nDetails: {response.text}") from err
+                raise ApiUnhandledError(response) from err
 
     raise RuntimeError("Unhandled error occured! Try again")
