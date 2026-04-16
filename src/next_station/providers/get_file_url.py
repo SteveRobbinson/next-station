@@ -1,11 +1,12 @@
 from src.next_station.infrastructure.runner import runner
-from src.next_station.schemas.worldpop import GetFileUrl, FileUrl
+from src.next_station.schemas.worldpop import GetFileUrl
 
 def get_file_url(api_url: str,
-                 index: int = -1
+                 index: int = -1,
+                 redirect = True
                  ) -> str:
 
-    response = runner(api_url, 'get')
+    response = runner(api_url, 'get', redirect=redirect)
     response = response.json()
 
     result = GetFileUrl(**response)
