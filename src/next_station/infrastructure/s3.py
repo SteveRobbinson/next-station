@@ -24,7 +24,6 @@ from src.next_station.schemas.worldpop import ApiMetadata, S3Etag
 from pydantic import ValidationError
 from typing import List
 import io
-from pathlib import PurePosixPath
 
 
 def create_s3_client() -> S3Client:
@@ -48,7 +47,7 @@ def create_s3_client() -> S3Client:
 logger = logging.getLogger(__name__)
 
 def get_s3_object_metadata(s3client: S3Client,
-                           aws_s3_path: PurePosixPath,
+                           aws_s3_path: str,
                            metadata_file_name: str = 'metadata.json'
                            ) -> dict:
 
