@@ -55,9 +55,8 @@ def compare_metadata(s3_metadata: dict,
 
         return aws_s3_etag == api_etag
     
-    except ValidationError:
-        return False
-
+    except Exception as err:
+        raise S3ServiceError.from_exception(err) from err
 
 
 def upload_data_to_s3(bucket_name: str,
