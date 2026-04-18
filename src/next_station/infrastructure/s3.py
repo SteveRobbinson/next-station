@@ -79,6 +79,10 @@ def upload_data_to_s3(bucket_name: str,
 
     else:
         raise ValueError(f"Expected requests.Response or List[io.BytesIO] as input. Got: {type(object_to_upload)}.")
+
+
+    if not to_upload:
+        raise ValueError(f"Input was valid type {type(object_to_upload)} but contained no data to upload")
     
 
     for key, fileobj in to_upload:
