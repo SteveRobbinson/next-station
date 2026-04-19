@@ -5,9 +5,9 @@ from src.next_station.quality.melt_table import melt_table
 from src.next_station.core.config import settings
 from src.next_station.infrastructure.databricks import save_df_in_db
 
-spark_session = get_spark_session(settings.databricks_sql_user_name)
+new_databricks = settings.databricks.model_copy(update={'compute_config': 'sql'})
 
-df = load_json_source(spark_session, settings.aws_railway_station_uri)
+spark_session = get_spark_session(new_databricks.compute_config)
 
 df = melt_table(df, settings.aws_railway_file_explode_by)
 
