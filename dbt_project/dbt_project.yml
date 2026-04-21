@@ -16,8 +16,10 @@ seeds:
 
 models:
   dbt_project:
-    +static_analysis: strict
-    staging:
-      +materialized: view
-    marts:
+    silver:
+      +schema: silver
+      +materialized: table
+
+    gold:
+      +schema: gold
       +materialized: table
