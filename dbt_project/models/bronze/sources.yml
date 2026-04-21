@@ -1,0 +1,9 @@
+version: 2
+sources:
+  - name: bronze_raw
+    catalog: "{{ target.catalog }}"
+    schema: "{{ target.schema }}"
+    tables:
+      - name: railway_stations
+      - name: population_grid
+
