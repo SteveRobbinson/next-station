@@ -24,15 +24,25 @@ class DatabricksConfig(BaseModel):
     population_grid_bronze_table: str = 'population_grid'
     population_grid_silver_table: str = 'int_population_grid_h3'
 
+    @computed_field # type: ignore[prop-decorator]
     @property
-    @computed_field
-    def railway_stations_fqn(self) -> str:
-        return f"{self.catalog}.{self.schema_name}.{self.railway_stations_table}"
+    def railway_stations_bronze_fqn(self) -> str:
+        return f"{self.catalog}.{self.schema_bronze}.{self.railway_stations_bronze_table}"
 
+    @computed_field # type: ignore[prop-decorator]
     @property
-    @computed_field
-    def population_grid_fqn(self) -> str:
-        return f"{self.catalog}.{self.schema_name}.{self.population_grid_table}"
+    def population_grid_bronze_fqn(self) -> str:
+        return f"{self.catalog}.{self.schema_bronze}.{self.population_grid_bronze_table}"
+
+    @computed_field # type: ignore[prop-decorator]
+    @property
+    def population_grid_silver_fqn(self) -> str:
+        return f"{self.catalog}.{self.schema_silver}.{self.population_grid_silver_table}"
+
+    @computed_field # type: ignore[prop-decorator]
+    @property
+    def railway_stations_silver_fqn(self) -> str:
+        return f"{self.catalog}.{self.schema_silver}.{self.railway_stations_silver_table}"
 
 
 class AWSConfig(BaseModel):
