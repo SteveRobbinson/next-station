@@ -15,11 +15,14 @@ class ExportTask(BaseModel):
 
 
 class DatabricksConfig(BaseModel):
-    compute_config: str = 'python'
+    compute_config: str = 'python-dev'
     catalog: str = 'main'
-    schema_name: str
-    railway_stations_table: str = 'railway_stations'
-    population_grid_table: str = 'population_grid'
+    schema_bronze: str
+    schema_silver: str
+    railway_stations_bronze_table: str = 'railway_stations'
+    railway_stations_silver_table: str = 'int_railway_stations_h3'
+    population_grid_bronze_table: str = 'population_grid'
+    population_grid_silver_table: str = 'int_population_grid_h3'
 
     @property
     @computed_field
