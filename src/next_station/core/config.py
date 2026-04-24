@@ -8,6 +8,12 @@ class ComputeMode(str, Enum):
     PYTHON = 'python'
 
 
+class ExportTask(BaseModel):
+    name: str
+    databricks_fqn: str
+    aws_target_uri: str
+
+
 class DatabricksConfig(BaseModel):
     compute_config: str = 'python'
     catalog: str = 'main'
@@ -69,5 +75,19 @@ class AppConfig(BaseSettings):
                 }
 
         return cls(databricks={'compute_config': configs[mode]}) # type: ignore
+
+    @computed_field # type: ignore[prop-decorator]
+    @property
+    def export_tasks(self) -> list[ExportTask]:
+
+        return [
+                ExportTask(name = 'population_grid',
+                           databricks_fqn = self.databricks.population_grid_silver_fqn,
+                           aws_target_uri = self.aws.population_grid_public
+                           ),
+                ExportTask(name = 'railway_stations',
+                           databricks_fqn = self.databricks.railway_stations_silver_fqn,
+                           aws_target_uri = self.aws.railway_stations_public)
+                ]
 
 settings = AppConfig() # type: ignore
