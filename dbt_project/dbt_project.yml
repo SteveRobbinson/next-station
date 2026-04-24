@@ -15,7 +15,7 @@ seeds:
     +schema: raw
 
 vars:
-  h3_resolution: 8
+  h3_resolutions: [5, 6, 7, 8, 9, 10]
 
 models:
   dbt_project:
