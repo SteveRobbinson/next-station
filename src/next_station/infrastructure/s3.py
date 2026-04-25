@@ -2,21 +2,20 @@ import requests
 import json
 import boto3
 from mypy_boto3_s3 import S3Client
-from src.next_station.core.exceptions import S3ServiceError
 from .runner import runner
 from src.next_station.schemas.worldpop import ApiMetadata, S3Etag
 from typing import List, Any
 import io
+from src.next_station.core.exceptions.external import AWSServiceError
 
 
 def create_s3_client() -> S3Client:
 
     try:
-        
         return boto3.client('s3')
     
     except Exception as err:
-        raise S3ServiceError.from_exception(err) from err
+        raise AWSServiceError.from_exception(err) from err
 
 
 def get_s3_object_metadata(s3client: S3Client,
@@ -25,7 +24,6 @@ def get_s3_object_metadata(s3client: S3Client,
                            ) -> dict:
 
     try:
-        
         aws_response = s3client.get_object(
             Bucket = aws_s3_path,
             Key = metadata_file_name)
@@ -33,9 +31,10 @@ def get_s3_object_metadata(s3client: S3Client,
         metadata = json.load(aws_response['Body'])
 
         return metadata
+
     
     except Exception as err:
-        raise S3ServiceError.from_exception(err) from err
+        raise AWSServiceError.from_exception(err) from err
 
 
 def compare_metadata(s3_metadata: dict,
@@ -46,16 +45,15 @@ def compare_metadata(s3_metadata: dict,
         return False
 
     try:
-
         api_response = runner(file_url, 'head')
         api_etag = ApiMetadata(**api_response.headers).etag
-
         aws_s3_etag = S3Etag(**s3_metadata).s3_etag
 
         return aws_s3_etag == api_etag
     
+
     except Exception as err:
-        raise S3ServiceError.from_exception(err) from err
+        raise AWSServiceError.from_exception(err) from err
 
 
 def upload_data_to_s3(bucket_name: str,
