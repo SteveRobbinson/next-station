@@ -16,6 +16,21 @@ class APIResponseError(UnifiedAPIError):
         super().__init__(self.source, status_code, details=reason)
 
 
+
+class APITimeoutError(UnifiedAPIError):
+    source = '### API TIMEOUT ###'
+
+    def __init__(self, url: str, details: str):
+        status_code = 504
+        msg_details = f"Timeout for: {url}"
+
+        if details:
+            msg_details += f" | {details}"
+            
+        super().__init__(self.source, status_code, details=msg_details) 
+
+
+
 ### AWS SERVICE ERROR ###
 class AWSServiceError(UnifiedAPIError):
     """Base class for AWS related errors"""
