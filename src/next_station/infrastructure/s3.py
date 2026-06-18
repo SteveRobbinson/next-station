@@ -1,12 +1,10 @@
 import logging
-import requests
+from next_station.core.types import SupportsRead
 import json
 import boto3
 from mypy_boto3_s3 import S3Client
 from .runner import runner
 from next_station.schemas.worldpop import ApiMetadata, S3Etag
-from typing import Any
-import io
 from next_station.core.exceptions.external import AWSServiceError
 from next_station.core.config.settings import settings
 
@@ -27,20 +25,20 @@ def create_s3_client() -> S3Client:
 
 
 def get_s3_object_metadata(s3client: S3Client,
-                           aws_s3_path: str,
-                           metadata_file_name: str = 'metadata.json'
+                           aws_s3_bucket_name: str,
+                           metadata_file_path: str,
                            ) -> dict:
 
-    logger.info(f"Retrieving metadata from {aws_s3_path}")
+    logger.info(f"Retrieving metadata from {metadata_file_path}")
 
     try:
         aws_response = s3client.get_object(
-            Bucket = aws_s3_path,
-            Key = metadata_file_name)
+            Bucket = aws_s3_bucket_name,
+            Key = metadata_file_path)
 
         metadata = json.load(aws_response['Body'])
         ### model pydantic, walidacja schematu json, do zrobienia
-        logger.info(f"Successfully retrieved metadata from {aws_s3_path}/{metadata_file_name}")
+        logger.info(f"Successfully retrieved metadata from {aws_s3_bucket_name}/{metadata_file_path}")
         return metadata
 
     
@@ -75,39 +73,21 @@ def compare_metadata(s3_metadata: dict,
 
 def upload_data_to_s3(bucket_name: str,
                       file_name: str,
-                      object_to_upload: requests.Response | list[io.BytesIO],
+                      object_to_upload: SupportsRead,
                       s3_client: S3Client,
                       metadata: dict | None = None
                       ) -> bool:
 
     logger.info(f"Starting uploading {file_name} to bucket {bucket_name}")
     extra_args = {'Metadata': metadata} if metadata else {}
-    to_upload: list[tuple[str, Any]] = []
 
     try:
-        if isinstance(object_to_upload, requests.Response):
-            if object_to_upload.raw:
-                logger.info(f"Detected requests.Response as input for {file_name}")
-                to_upload.append((file_name, object_to_upload.raw))
-
-        elif isinstance(object_to_upload, list):
-            logger.info(f"Detected list of io.BytesIO as input ({len(object_to_upload)} chunks) for {file_name}")
-            for i, buffer in enumerate(object_to_upload):
-                to_upload.append((f"{file_name}/chunk_{i + 1}.tif", buffer))
-
-        if not to_upload:
-            msg = f"Input was valid type {type(object_to_upload)} but contained no data to upload"
-            logger.warning(msg)
-            raise ValueError(msg)
+        logger.info(f"Uploading object to S3: {file_name}")
+        s3_client.upload_fileobj(Bucket = bucket_name,
+                             Fileobj = object_to_upload,
+                             Key = file_name,
+                             ExtraArgs = extra_args)
         
-
-        for key, fileobj in to_upload:
-            logger.info(f"Uploading object to S3: {key}")
-            s3_client.upload_fileobj(Bucket = bucket_name,
-                                     Fileobj = fileobj,
-                                     Key = key,
-                                     ExtraArgs = extra_args)
-            
         if metadata:
             metadata_content = json.dumps(metadata).encode('utf-8')
             metadata_key = f"{file_name}/metadata.json"
@@ -117,6 +97,7 @@ def upload_data_to_s3(bucket_name: str,
                     Key = metadata_key,
                     Body = metadata_content
                     )
+
 
         logger.info(f"Successfully finished all upload operations for {file_name}")
         return True
