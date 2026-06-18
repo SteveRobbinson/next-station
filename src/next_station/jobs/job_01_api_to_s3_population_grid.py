@@ -9,7 +9,6 @@ from next_station.core.config.settings import settings
 from next_station.schemas.worldpop import ApiMetadata
 from next_station.providers.get_file_url import get_file_url
 from next_station.providers.fetch_population_grid import fetch_population_grid
-from next_station.infrastructure.slice_dataset import slice_dataset
 from next_station.core.exceptions.base import BaseAppError, InfrastructureError, UnifiedAPIError
 
 logger = logging.getLogger(__name__)
@@ -23,19 +22,17 @@ def ingest_population_grid_to_s3():
         population_grid_file_url = get_file_url(str(settings.api.base_population_grid_url))
 
         logger.info(f"Checking for updates at: {population_grid_file_url}")
-        s3_object_metadata = get_s3_object_metadata(s3, settings.aws.s3_bucket_name)
+        s3_object_metadata = get_s3_object_metadata(s3, settings.aws.s3_bucket_name, f"{settings.aws.s3_population_grid_file_name}/metadata.json")
         is_metadata_same = compare_metadata(s3_object_metadata, population_grid_file_url)
 
         if not is_metadata_same:
             logger.info('Change detected. Fetching and processing new population grid...')
             population_grid = fetch_population_grid(population_grid_file_url)
             metadata = {'ETag': ApiMetadata(**population_grid.headers).etag}
-            
-            sliced_dataset = slice_dataset(population_grid)
 
             upload_data_to_s3(settings.aws.s3_bucket_name,
                               settings.aws.s3_population_grid_file_name,
-                              sliced_dataset,
+                              population_grid.raw,
                               s3,
                               metadata)
 
