@@ -1,7 +1,7 @@
 from pydantic import BaseModel, computed_field
 
 class DatabricksConfig(BaseModel):
-    compute_config: str = 'python-dev'
+    compute_config: str = 'local'
     catalog: str = 'main'
     schema_bronze: str
     schema_silver: str
