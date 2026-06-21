@@ -1,8 +1,11 @@
+from __future__ import annotations
 import logging
 from next_station.core.types import SupportsRead
 import json
 import boto3
-from mypy_boto3_s3 import S3Client
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from mypy_boto3_s3 import S3Client
 from .runner import runner
 from next_station.schemas.worldpop import ApiMetadata, S3Etag
 from next_station.core.exceptions.external import AWSServiceError
