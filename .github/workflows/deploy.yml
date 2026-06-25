@@ -32,5 +32,8 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
+      - name: Build python wheel
+        run: python -m build --wheel
+
       - name: Deploy bundle
         run: databricks bundle deploy -t prod
