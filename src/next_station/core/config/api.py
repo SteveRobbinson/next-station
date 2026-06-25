@@ -7,5 +7,8 @@ class ApiRequestsConfig(BaseModel):
     payload_for_railway_stations: str
 
     base_population_grid_url: HttpUrl
-    headers: dict[str, str]
+    user_agent: str
 
+    @property
+    def headers(self) -> dict[str, str]:
+        return {"User-Agent": self.user_agent}
