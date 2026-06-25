@@ -31,13 +31,13 @@ variables:
   aws__s3_population_grid_file_name:
     default: "population_grid_poland"
   api__base_railway_stations_url:
-    default: "https://overpass-api.de/api/interpreter/"
+    default: https://overpass-api.de/api/interpreter/
   api__base_population_grid_url:
-    default: "https://www.worldpop.org/rest/data/pop/wpgp?iso3=POL"
+    default: https://www.worldpop.org/rest/data/pop/wpgp?iso3=POL
   api__payload_for_railway_stations:
     default: "[out:json][timeout:180]; area['name'='Polska']->.searchArea; (nwr['railway'='station'](area.searchArea); ); out center;"
-  api__headers:
-    default: '{"User-Agent": "NastepnaStacjaBot/1.0 (contact: lukasjagusz6@gmail.com"}'
+  api__user_agent:
+    default: 'NastepnaStacjaBot/1.0 (contact: lukasjagusz6@gmail.com)'
 
 targets:
   prod:
