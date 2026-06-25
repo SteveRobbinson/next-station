@@ -10,8 +10,6 @@ artifacts:
 
 
 variables:
-  volume_path:
-    description: "Target path for python wheel"
   spark_version:
     default: "4.0_2.13"
   sedona_version:
@@ -22,6 +20,24 @@ variables:
     default: "17.3.x-scala2.13"
   sql_warehouse_id:
     description: "warehouse ID for dbt related tasks"
+  databricks__schema_bronze:
+    default: "lukasj47"
+  databricks__schema_silver:
+    default: "lukasj47_silver"
+  aws__s3_bucket_name:
+    default: "next-station-bucket"
+  aws__s3_railway_stations_file_name:
+    default: "railway_stations_poland.json.gz"
+  aws__s3_population_grid_file_name:
+    default: "population_grid_poland"
+  api__base_railway_stations_url:
+    default: "https://overpass-api.de/api/interpreter/"
+  api__base_population_grid_url:
+    default: "https://www.worldpop.org/rest/data/pop/wpgp?iso3=POL"
+  api__payload_for_railway_stations:
+    default: "[out:json][timeout:180]; area['name'='Polska']->.searchArea; (nwr['railway'='station'](area.searchArea); ); out center;"
+  api__headers:
+    default: '{"User-Agent": "NastepnaStacjaBot/1.0 (contact: lukasjagusz6@gmail.com"}'
 
 targets:
   prod:
