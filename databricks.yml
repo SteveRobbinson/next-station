@@ -62,6 +62,10 @@ resources:
             "spark.kryoserializer.buffer.max": "2047m"
             "spark.sql.sedona.raster.serialization.kryo": "true"
           data_security_mode: "SINGLE_USER"
+          cluster_log_conf:
+            s3:
+              destination: "s3://${var.aws__s3_bucket_name}/databricks-jobs-logs/"
+              region: "eu-central-1"
           spark_env_vars:
             DATABRICKS__SCHEMA_BRONZE: ${var.databricks__schema_bronze}
             DATABRICKS__SCHEMA_SILVER: ${var.databricks__schema_silver}
