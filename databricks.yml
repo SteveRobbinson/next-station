@@ -72,6 +72,8 @@ resources:
             API__BASE_POPULATION_GRID_URL: ${var.api__base_population_grid_url}
             API__PAYLOAD_FOR_RAILWAY_STATIONS: ${var.api__payload_for_railway_stations}
             API__USER_AGENT: ${var.api__user_agent}
+            AWS_ACCESS_KEY_ID: "{{secrets/aws_auth/aws_access_key_id}}"
+            AWS_SECRET_ACCESS_KEY: "{{secrets/aws_auth/aws_secret_access_key}}"
 
       tasks:
         ### Railway Stations Pipeline ###
