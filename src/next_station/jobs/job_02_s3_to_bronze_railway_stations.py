@@ -5,7 +5,6 @@ from next_station.quality.df_empty import is_df_empty
 from next_station.quality.melt_table import melt_table
 from next_station.core.config.settings import settings
 from next_station.infrastructure.databricks import save_df_in_db
-from next_station.core.config.base import ComputeMode
 from next_station.core.exceptions.base import BaseAppError, InfrastructureError, UnifiedAPIError
 
 logger = logging.getLogger(__name__)
@@ -15,8 +14,7 @@ def load_railway_stations_to_databricks():
 
     try:
 
-        config = settings.load_compute_config(ComputeMode.SQL) 
-        spark_session = get_spark_session(config.databricks.compute_config)
+        spark_session = get_spark_session()
 
         logger.info(f"Ingesting raw data from {settings.aws.railway_stations_uri}")
         df = load_json_source(spark_session, settings.aws.railway_stations_uri)

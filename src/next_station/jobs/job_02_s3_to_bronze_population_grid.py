@@ -14,7 +14,7 @@ def load_population_grid_to_databricks():
 
     try:
 
-        spark_session = get_spark_session(settings.databricks.compute_config)
+        spark_session = get_spark_session()
         spark_session = SedonaContext.create(spark_session)
 
         logger.info(f"Ingesting raw data from {settings.aws.population_grid_uri}")

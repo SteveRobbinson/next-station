@@ -12,7 +12,7 @@ def run_export_job():
     
     try:
 
-        spark = get_spark_session(settings.databricks.compute_config)
+        spark = get_spark_session()
 
         for task in settings.export_tasks:
             consolidate_to_single_parquet(spark,
