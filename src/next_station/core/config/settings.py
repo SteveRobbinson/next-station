@@ -3,7 +3,7 @@ from pydantic import computed_field
 from next_station.core.config.databricks import DatabricksConfig
 from next_station.core.config.aws import AWSConfig
 from next_station.core.config.api import ApiRequestsConfig
-from next_station.core.config.base import ComputeMode, ExportTask
+from next_station.core.config.base import ExportTask
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[4]
@@ -16,15 +16,6 @@ class AppConfig(BaseSettings):
     aws: AWSConfig
     api: ApiRequestsConfig
 
-
-    @classmethod
-    def load_compute_config(cls, mode: ComputeMode):
-        configs = {
-                ComputeMode.SQL: 'sql-dev',
-                ComputeMode.PYTHON: 'python-dev'
-                }
-
-        return cls(databricks={'compute_config': configs[mode]}) # type: ignore
 
     @computed_field # type: ignore[prop-decorator]
     @property
