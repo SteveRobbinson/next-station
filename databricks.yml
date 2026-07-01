@@ -20,6 +20,7 @@ variables:
     default: "17.3.x-scala2.13"
   sql_warehouse_id:
     description: "warehouse ID for dbt related tasks"
+    default: "265b8be633e8173e"
   databricks__schema_bronze:
     default: "lukasj47"
   databricks__schema_silver:
