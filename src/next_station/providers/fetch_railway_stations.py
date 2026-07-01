@@ -10,6 +10,7 @@ def fetch_train_stations(api_url: str,
                          ) -> requests.Response:
 
     logger.info(f"Starting to fetch railway_stations from {api_url}")
+    response = None
 
     try:
         response = runner(api_url, 'post', payload, stream=True)

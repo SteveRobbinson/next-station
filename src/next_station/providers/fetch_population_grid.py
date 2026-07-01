@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 def fetch_population_grid(api_url: str) -> requests.Response:
 
     logger.info(f"Starting to fetch population grid dataset from {api_url}")
+    response = None
     
     try:
         response = runner(api_url, 'get', stream=True)
