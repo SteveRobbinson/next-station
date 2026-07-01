@@ -11,7 +11,7 @@ def load_population_grid(spark: SparkSession,
     logger.info(f"Starting loading population grid from {aws_s3_path}")
 
     try:
-        df =spark.read.format(data_format).option("pathGlobFilter", "*.tif").load(aws_s3_path)
+        df =spark.read.format(data_format).load(aws_s3_path)
 
         logger.info(f"Successfully loaded population grid file from {aws_s3_path}")
         return df
