@@ -1,4 +1,5 @@
 import logging
+import sys
 import time
 from next_station.core.exceptions.base import InfrastructureError
 from pyspark.sql import SparkSession
@@ -40,3 +41,13 @@ def consolidate_to_single_parquet(spark: SparkSession,
                 status_code=500,
                 details=f"Infrastructure failure: Data consolidation for {source_fqn} failed."
                 ) from err
+
+
+def setup_logging() -> None:
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+        handlers=[logging.StreamHandler(sys.stdout)],
+        force=True
+        )
