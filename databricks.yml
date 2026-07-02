@@ -38,7 +38,9 @@ variables:
   api__payload_for_railway_stations:
     default: "[out:json][timeout:180]; area['name'='Polska']->.searchArea; (nwr['railway'='station'](area.searchArea); ); out center;"
   api__user_agent:
-    default: 'NastepnaStacjaBot/1.0 (contact: lukasjagusz6@gmail.com)'
+    default: 'NextStationBot/1.0 (contact: lukasjagusz6@gmail.com)'
+  api__referer:
+    default: 'https://github.com/SteveRobbinson/next-station'
 
 targets:
   prod:
