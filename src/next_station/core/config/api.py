@@ -8,7 +8,9 @@ class ApiRequestsConfig(BaseModel):
 
     base_population_grid_url: HttpUrl
     user_agent: str
+    referer: str
 
     @property
     def headers(self) -> dict[str, str]:
-        return {"User-Agent": self.user_agent}
+        return {"User-Agent": self.user_agent,
+                "Referer": self.referer}
