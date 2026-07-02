@@ -47,7 +47,7 @@ def runner(api_url: str,
             if i == max_retries - 1:
                 raise APITimeoutError(api_url, str(err)) from err
 
-            logger.warning(f"Attempt {i + 1} failed (timeout). Retrying...")
+            logger.warning(f"Attempt {i + 1} failed. \nError: {type(err).__name__}\n{err}\nRetrying...")
             _perform_backoff(i)
             continue
 
