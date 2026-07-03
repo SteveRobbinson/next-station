@@ -7,12 +7,13 @@ logger = logging.getLogger(__name__)
 def save_df_in_db(df: DataFrame,
                   table_name: str,
                   save_format: str = 'delta',
-                  save_mode: str = 'overwrite'):
+                  save_mode: str = 'append',
+                  merge_schema: bool = False):
 
     logger.info(f"Starting write to table: {table_name} (format: {save_format}, mode: {save_mode})")
     
     try:
-        df.write.format(save_format).mode(save_mode).saveAsTable(table_name)
+        df.write.format(save_format).mode(save_mode).option('mergeSchema', merge_schema).saveAsTable(table_name)
         logger.info(f"Table {table_name} saved successfully")
 
 
