@@ -32,7 +32,7 @@ variables:
   aws__s3_population_grid_file_name:
     default: "population_grid_poland"
   api__base_railway_stations_url:
-    default: https://overpass-api.de/api/interpreter/
+    default: https://maps.mail.ru/osm/tools/overpass/api/interpreter
   api__base_population_grid_url:
     default: https://www.worldpop.org/rest/data/pop/wpgp?iso3=POL
   api__payload_for_railway_stations:
@@ -80,6 +80,7 @@ resources:
             API__USER_AGENT: ${var.api__user_agent}
             AWS_ACCESS_KEY_ID: "{{secrets/aws_auth/aws_access_key_id}}"
             AWS_SECRET_ACCESS_KEY: "{{secrets/aws_auth/aws_secret_access_key}}"
+            API__REFERER: ${var.api__referer}
 
       tasks:
         ### Railway Stations Pipeline ###
