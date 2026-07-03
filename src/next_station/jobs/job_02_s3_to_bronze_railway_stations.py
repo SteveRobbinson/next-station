@@ -26,7 +26,7 @@ def load_railway_stations_to_databricks():
         df = is_df_empty(df)
 
         logger.info(f"Persisting dataset to table {settings.databricks.railway_stations_bronze_fqn}")
-        save_df_in_db(df, settings.databricks.railway_stations_bronze_fqn)
+        save_df_in_db(df, settings.databricks.railway_stations_bronze_fqn, merge_schema = True)
 
         logger.info("Successfully loaded railway stations to Databricks")
 
