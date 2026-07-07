@@ -108,26 +108,32 @@ resources:
           libraries:
             - whl: dist/next_station-0.1.0-py3-none-any.whl
 
-        - task_key: "railway_stations_silver_A"
+        - task_key: "railway_stations_bronze"
           job_cluster_key: "databricks_geo_cluster"
           depends_on:
             - task_key: "preprocess_railway_stations"
           dbt_task:
-            project_directory: "./dbt_project"
+            source: GIT
+            project_directory: ${var.dbt_project_directory}
             warehouse_id: ${var.sql_warehouse_id}
             commands:
               - "dbt deps"
               - "dbt run --select stg_railway_stations"
+            catalog: main
+            schema: bronze
 
-        - task_key: "railway_stations_silver_B"
+        - task_key: "railway_stations_silver"
           job_cluster_key: "databricks_geo_cluster"
           depends_on:
-            - task_key: "railway_stations_silver_A"
+            - task_key: "railway_stations_bronze"
           dbt_task:
-            project_directory: "./dbt_project"
+            source: GIT
+            project_directory: ${var.dbt_project_directory}
             warehouse_id: ${var.sql_warehouse_id}
             commands:
               - "dbt run --select int_railway_stations"
+            catalog: main
+            schema: silver
 
 
         ### Population Grid Pipeline ####
@@ -153,23 +159,29 @@ resources:
             - maven:
                 coordinates: "org.datasyslab:geotools-wrapper:${var.geotools_version}"
                   
-        - task_key: "population_grid_silver_A"
+        - task_key: "population_grid_bronze"
           job_cluster_key: "databricks_geo_cluster"
           depends_on:
             - task_key: "preprocess_population_grid"
           dbt_task:
-            project_directory: "./dbt_project"
+            source: GIT
+            project_directory: ${var.dbt_project_directory}
             warehouse_id: ${var.sql_warehouse_id}
             commands:
               - "dbt deps"
               - "dbt run --select stg_population_grid"
+            catalog: main
+            schema: bronze
 
-        - task_key: "population_grid_silver_B"
+        - task_key: "population_grid_silver"
           job_cluster_key: "databricks_geo_cluster"
           depends_on:
-            - task_key: "population_grid_silver_A"
+            - task_key: "population_grid_bronze"
           dbt_task:
-            project_directory: "./dbt_project"
+            source: GIT
+            project_directory: ${var.dbt_project_directory}
             warehouse_id: ${var.sql_warehouse_id}
             commands:
               - "dbt run --select ing_population_grid"
+            catalog: main
+            schema: silver
