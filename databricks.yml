@@ -131,6 +131,7 @@ resources:
             project_directory: ${var.dbt_project_directory}
             warehouse_id: ${var.sql_warehouse_id}
             commands:
+              - "dbt deps"
               - "dbt run --select int_railway_stations"
             catalog: main
             schema: silver
@@ -182,6 +183,7 @@ resources:
             project_directory: ${var.dbt_project_directory}
             warehouse_id: ${var.sql_warehouse_id}
             commands:
+              - "dbt deps"
               - "dbt run --select ing_population_grid"
             catalog: main
             schema: silver
