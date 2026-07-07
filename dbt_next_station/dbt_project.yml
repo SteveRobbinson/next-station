@@ -1,4 +1,4 @@
-name: dbt_project
+name: dbt_next_station
 
 profile: next_station
 
@@ -18,7 +18,7 @@ vars:
   h3_resolutions: [5, 6, 7, 8, 9, 10]
 
 models:
-  dbt_project:
+  dbt_next_station:
     silver:
       +schema: silver
       +materialized: table
