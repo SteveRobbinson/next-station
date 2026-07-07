@@ -19,6 +19,10 @@ vars:
 
 models:
   dbt_next_station:
+    bronze:
+      +schema: bronze
+      +materialized: table
+
     silver:
       +schema: silver
       +materialized: table
