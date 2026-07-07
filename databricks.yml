@@ -22,9 +22,9 @@ variables:
     description: "warehouse ID for dbt related tasks"
     default: "265b8be633e8173e"
   databricks__schema_bronze:
-    default: "lukasj47"
+    default: "bronze"
   databricks__schema_silver:
-    default: "lukasj47_silver"
+    default: "silver"
   aws__s3_bucket_name:
     default: "next-station-bucket"
   aws__s3_railway_stations_file_name:
