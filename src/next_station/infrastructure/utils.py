@@ -17,25 +17,25 @@ def _perform_backoff(current_retry_count: int,
     time.sleep(sleep_time)
 
 
-def consolidate_to_single_parquet(spark: SparkSession,
-                                  source_fqn: str,
-                                  aws_bucket_uri: str):
+def export_table_to_s3_parquet(spark: SparkSession,
+                               source_fqn: str,
+                               aws_bucket_uri: str):
     
     logger.info(f"Consolidating table {source_fqn} into a single parquet file at {aws_bucket_uri}")
 
     try:
         df = spark.table(source_fqn)
         
-        (df.repartition(1)
-         .write
+        (df.write
          .mode('overwrite')
          .format('parquet')
          .save(aws_bucket_uri))
+            
         logger.info(f"Successfully consolidated {source_fqn} into {aws_bucket_uri}")
 
 
     except Exception as err:
-        logger.exception(f"REPARTITION(1) FAILURE: Could not consolidate table {source_fqn} to S3 destination {aws_bucket_uri}. Spark job aborted.")
+        logger.exception(f"Could not consolidate table {source_fqn} to S3 destination {aws_bucket_uri}. Spark job aborted.")
         raise InfrastructureError(
                 source="### Parquet Consolidator ###",
                 status_code=500,
