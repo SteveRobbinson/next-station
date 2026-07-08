@@ -184,7 +184,7 @@ resources:
             warehouse_id: ${var.sql_warehouse_id}
             commands:
               - "dbt deps"
-              - "dbt run --select ing_population_grid_h3"
+              - "dbt run --select int_population_grid_h3"
             catalog: main
             schema: silver
 
