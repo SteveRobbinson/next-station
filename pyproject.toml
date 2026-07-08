@@ -25,6 +25,7 @@ ingest_railway_stations = "next_station.jobs.job_01_api_to_s3_railway_stations:i
 preprocess_railway_stations = "next_station.jobs.job_02_s3_to_bronze_railway_stations:load_railway_stations_to_databricks"
 ingest_population_grid = "next_station.jobs.job_01_api_to_s3_population_grid:ingest_population_grid_to_s3"
 preprocess_population_grid = "next_station.jobs.job_02_s3_to_bronze_population_grid:load_population_grid_to_databricks"
+publish_serving_data = "next_station.jobs.publish_serving_data:run_export_job"
 
 [tool.setuptools.packages.find]
 where = ["src"]
