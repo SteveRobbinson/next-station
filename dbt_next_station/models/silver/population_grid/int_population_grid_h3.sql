@@ -5,7 +5,7 @@ with h3_base as (
     h3_pointash3(geom_wkb, {{h3_res}}) as h3_index_{{h3_res}}
     {%- if not loop.last %},{% endif %}
     {% endfor %}
-  from {{ ref('stg_population_grid') }}
+  from {{ source('bronze', 'stg_population_grid') }}
 )
 
 select

@@ -1,5 +1,5 @@
 with source as (
-  select * from {{ source('bronze_raw', 'railway_stations') }}
+  select * from {{ source('bronze', 'railway_stations') }}
 ),
 
 railway_stations as (

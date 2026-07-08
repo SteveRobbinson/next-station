@@ -1,5 +1,5 @@
 with source as (
-  select * from {{ source('bronze_raw', 'population_grid') }}
+  select * from {{ source('bronze', 'population_grid') }}
 ),
 
 population_grid as (
