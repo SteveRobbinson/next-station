@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: int_railway_stations_h3
+    columns:  
+      - name: station_id
+        tests:
+          - unique
+          - not_null
+      
+      - name: h3_index
+        tests:
+          - not_null
