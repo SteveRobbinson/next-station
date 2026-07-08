@@ -187,3 +187,14 @@ resources:
               - "dbt run --select ing_population_grid"
             catalog: main
             schema: silver
+
+        - task_key: "publish_data_to_s3"
+          job_cluster_key: "databricks_geo_cluster"
+          depends_on:
+            - task_key: "population_grid_silver"
+            - task_key: "railway_stations_silver"
+          python_wheel_task:
+            package_name: "next_station"
+            entry_point: "publish_serving_data"
+          libraries:
+            - whl: dist/next_station-0.1.0-py3-none-any.whl
