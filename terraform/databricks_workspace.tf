@@ -97,6 +97,7 @@ resource "aws_iam_role_policy" "cross_account_policy" {
         Sid    = "NonResourcePermissions"
         Effect = "Allow"
         Action = [
+          "ec2:DescribeVpcAttribute",
           "ec2:DescribeAvailabilityZones",
           "ec2:AttachVolume",
           "ec2:AuthorizeSecurityGroupEgress",
