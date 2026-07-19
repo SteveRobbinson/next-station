@@ -21,8 +21,20 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Terraform Format Check
+        run: terraform -chdir=terraform/runtime fmt -check
+
+      - name: Terraform Init
+        run: terraform -chdir=terraform/runtime init
+
+      - name: Terraform Validate
+        run: terraform -chdir=terraform/runtime validate
+
       - name: Install build tools
         run: pip install build wheel
+
+      - name: Build runtime infrastructure
+        run: terraform -chdir=terraform/runtime apply -auto-approve
 
       - name: Install Databricks CLI
         run: |
@@ -33,3 +45,6 @@ jobs:
 
       - name: Deploy bundle
         run: databricks bundle deploy -t prod
+
+      - name: Destroy runtime infrastructure
+        run: terraform -chdir=terraform/runtime destroy -auto-approve
