@@ -46,5 +46,8 @@ jobs:
       - name: Deploy bundle
         run: databricks bundle deploy -t prod
 
+      - name: Run bundle
+        run: databricks bundle run -t prod
+
       - name: Destroy runtime infrastructure
         run: terraform -chdir=terraform/runtime destroy -auto-approve
