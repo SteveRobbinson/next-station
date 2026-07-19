@@ -52,7 +52,7 @@ resources:
     etl_geo_job:
       name: "ETL Geo Job"
       job_clusters:
-      - job_cluster_key: "databricks_geo_cluster"
+      - job_cluster_key: "geo_cluster_v2"
         new_cluster:
           spark_version: ${var.databricks_runtime_version}
           node_type_id: "r5d.large"
@@ -86,7 +86,7 @@ resources:
       tasks:
         ### Railway Stations Pipeline ###
         - task_key: "ingest_railway_stations"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           python_wheel_task:
             package_name: "next_station"
             entry_point: "ingest_railway_stations"
@@ -94,7 +94,7 @@ resources:
             - whl: dist/next_station-0.1.0-py3-none-any.whl
 
         - task_key: "preprocess_railway_stations"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           depends_on:
             - task_key: "ingest_railway_stations"
           python_wheel_task:
@@ -104,7 +104,7 @@ resources:
             - whl: dist/next_station-0.1.0-py3-none-any.whl
 
         - task_key: "railway_stations_bronze"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           depends_on:
             - task_key: "preprocess_railway_stations"
           dbt_task:
@@ -118,7 +118,7 @@ resources:
             schema: bronze
 
         - task_key: "railway_stations_silver"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           depends_on:
             - task_key: "railway_stations_bronze"
           dbt_task:
@@ -134,7 +134,7 @@ resources:
 
         ### Population Grid Pipeline ####
         - task_key: "ingest_population_grid"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           python_wheel_task:
             package_name: "next_station"
             entry_point: "ingest_population_grid"
@@ -142,7 +142,7 @@ resources:
             - whl: dist/next_station-0.1.0-py3-none-any.whl
 
         - task_key: "preprocess_population_grid"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           depends_on:
             - task_key: "ingest_population_grid"
           python_wheel_task:
@@ -156,7 +156,7 @@ resources:
                 coordinates: "org.datasyslab:geotools-wrapper:${var.geotools_version}"
                   
         - task_key: "population_grid_bronze"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           depends_on:
             - task_key: "preprocess_population_grid"
           dbt_task:
@@ -170,7 +170,7 @@ resources:
             schema: bronze
 
         - task_key: "population_grid_silver"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           depends_on:
             - task_key: "population_grid_bronze"
           dbt_task:
@@ -184,7 +184,7 @@ resources:
             schema: silver
 
         - task_key: "publish_data_to_s3"
-          job_cluster_key: "databricks_geo_cluster"
+          job_cluster_key: "geo_cluster_v2"
           depends_on:
             - task_key: "population_grid_silver"
             - task_key: "railway_stations_silver"
