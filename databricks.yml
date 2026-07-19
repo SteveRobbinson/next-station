@@ -58,7 +58,6 @@ resources:
           node_type_id: "r5d.large"
           num_workers: 2
           aws_attributes:
-            instance_profile_arn: "arn:aws:iam::478043880206:instance-profile/databricks-job-logger"
             availability: "SPOT_WITH_FALLBACK"
             first_on_demand: 1
           spark_conf:
@@ -66,10 +65,6 @@ resources:
             "spark.kryoserializer.buffer.max": "2047m"
             "spark.sql.sedona.raster.serialization.kryo": "true"
           data_security_mode: "SINGLE_USER"
-          cluster_log_conf:
-            s3:
-              destination: "s3://${var.aws__s3_bucket_name}/databricks-jobs-logs/"
-              region: "eu-north-1"
           spark_env_vars:
             DATABRICKS__SCHEMA_BRONZE: ${var.databricks__schema_bronze}
             DATABRICKS__SCHEMA_SILVER: ${var.databricks__schema_silver}
