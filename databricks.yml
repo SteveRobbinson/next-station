@@ -20,13 +20,13 @@ variables:
     default: "17.3.x-scala2.13"
   sql_warehouse_id:
     description: "warehouse ID for dbt related tasks"
-    default: "265b8be633e8173e"
+    default: "9c7e19e24a2b95ec"
   databricks__schema_bronze:
     default: "bronze"
   databricks__schema_silver:
     default: "silver"
   aws__s3_bucket_name:
-    default: "next-station-bucket"
+    default: "next-station-main"
   aws__s3_railway_stations_file_name:
     default: "railway_stations_poland.json.gz"
   aws__s3_population_grid_file_name:
