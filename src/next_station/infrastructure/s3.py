@@ -10,6 +10,7 @@ from .runner import runner
 from next_station.schemas.worldpop import ApiMetadata, S3Etag
 from next_station.core.exceptions.external import AWSServiceError
 from next_station.core.config.settings import settings
+from botocore.exceptions import ClientError
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ def create_s3_client() -> S3Client:
 def get_s3_object_metadata(s3client: S3Client,
                            aws_s3_bucket_name: str,
                            metadata_file_path: str,
-                           ) -> dict:
+                           ) -> dict | None:
 
     logger.info(f"Retrieving metadata from {metadata_file_path}")
 
@@ -45,11 +46,14 @@ def get_s3_object_metadata(s3client: S3Client,
         return metadata
 
     
-    except Exception as err:
+    except ClientError as err:
+        if err.response['Error']['Code'] == 'NoSuchKey':
+            return None
+
         raise AWSServiceError.from_exception(err) from err
 
 
-def compare_metadata(s3_metadata: dict,
+def compare_metadata(s3_metadata: dict | None,
                      file_url: str
                     ) -> bool:
     
