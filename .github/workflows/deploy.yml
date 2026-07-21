@@ -21,6 +21,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v4
+
       - name: Terraform Format Check
         run: terraform -chdir=terraform/runtime fmt -check
 
