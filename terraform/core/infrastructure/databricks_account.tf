@@ -1,3 +1,9 @@
+resource "time_sleep" "wait_for_cross_account_role" {
+  depends_on      = [aws_iam_role_policy.cross_account_policy]
+  create_duration = "20s"
+}
+
+
 resource "databricks_mws_storage_configurations" "this" {
   provider                   = databricks.mws
   account_id                 = var.databricks_account_id
@@ -8,6 +14,7 @@ resource "databricks_mws_storage_configurations" "this" {
 }
 
 resource "databricks_mws_credentials" "this" {
+  depends_on       = [time_sleep.wait_for_cross_account_role]
   provider         = databricks.mws
   account_id       = var.databricks_account_id
   credentials_name = "${var.workspace_name}-credentials"
