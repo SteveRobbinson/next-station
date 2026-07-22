@@ -1,10 +1,3 @@
-resource "random_string" "unique_suffix" {
-  length  = 6
-  special = false
-  upper   = false
-}
-
-
 resource "databricks_mws_workspaces" "this" {
 
   provider       = databricks.mws
