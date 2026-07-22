@@ -34,3 +34,8 @@ resource "databricks_mws_networks" "this" {
     aws_route_table_association.private_assoc_b
   ]
 }
+
+data "databricks_user" "me" {
+  provider  = databricks.mws
+  user_name = var.databricks_admin_email
+}
