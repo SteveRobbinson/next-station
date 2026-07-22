@@ -13,13 +13,9 @@ resource "databricks_mws_workspaces" "this" {
 }
 
 
-resource "databricks_sql_endpoint" "this" {
-  provider                  = databricks.workspace
-  name                      = "SQL Warehouse ${var.workspace_name}-${random_string.unique_suffix.result}"
-  cluster_size              = "Small"
-  min_num_clusters          = 1
-  max_num_clusters          = 2
-  auto_stop_mins            = 15
-  warehouse_type            = "PRO"
-  enable_serverless_compute = true
+resource "databricks_mws_permission_assignment" "add_user" {
+  provider     = databricks.mws
+  workspace_id = databricks_mws_workspaces.this.workspace_id
+  principal_id = data.terraform_remote_state.infrastructure.outputs.databricks_user_id
+  permissions  = ["ADMIN"]
 }
