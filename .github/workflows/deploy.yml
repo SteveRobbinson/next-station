@@ -21,8 +21,12 @@ jobs:
       - name: Setup terraform
         uses: hashicorp/setup-terraform@v4
 
-      - name: Terraform Format Check
-        run: terraform -chdir=terraform/runtime fmt -check
+      - name: Deploy infrastructure
+        run: |
+          terraform -chdir=terraform/core/infrastructure fmt -check
+          terraform -chdir=terraform/core/infrastructure init
+          terraform -chdir=terraform/core/infrastructure validate
+          terraform -chdir=terraform/core/infrastructure apply -auto-approve
 
       - name: Terraform Init
         run: terraform -chdir=terraform/runtime init
