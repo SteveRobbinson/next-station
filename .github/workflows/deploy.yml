@@ -28,17 +28,17 @@ jobs:
           terraform -chdir=terraform/core/infrastructure validate
           terraform -chdir=terraform/core/infrastructure apply -auto-approve
 
-      - name: Terraform Init
-        run: terraform -chdir=terraform/runtime init
+      - name: Deploy workspace
+        run: |
+          terraform -chdir=terraform/core/workspace fmt -check
+          terraform -chdir=terraform/core/workspace init
+          terraform -chdir=terraform/core/workspace validate
+          terraform -chdir=terraform/core/workspace apply -auto-approve
 
-      - name: Terraform Validate
-        run: terraform -chdir=terraform/runtime validate
+
 
       - name: Install build tools
         run: pip install build wheel
-
-      - name: Build runtime infrastructure
-        run: terraform -chdir=terraform/runtime apply -auto-approve
 
       - name: Install Databricks CLI
         run: |
