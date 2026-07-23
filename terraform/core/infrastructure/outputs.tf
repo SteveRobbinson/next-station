@@ -1,11 +1,3 @@
-output "workspace_url" {
-  value = databricks_mws_workspaces.this.workspace_url
-}
-
-output "workspace_id" {
-  value = databricks_mws_workspaces.this.workspace_id
-}
-
 output "vpc_id" {
   value = aws_vpc.databricks_vpc.id
 }
@@ -28,4 +20,20 @@ output "cross_account_role_arn" {
 
 output "workspace_name" {
   value = var.workspace_name
+}
+
+output "credentials_id" {
+  value = databricks_mws_credentials.this.credentials_id
+}
+
+output "storage_configuration_id" {
+  value = databricks_mws_storage_configurations.this.storage_configuration_id
+}
+
+output "network_id" {
+  value = databricks_mws_networks.this.network_id
+}
+
+output "databricks_user_id" {
+  value = data.databricks_user.me.id
 }

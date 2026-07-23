@@ -1,3 +1,7 @@
+variable "databricks_admin_email" {
+  type = string
+}
+
 variable "databricks_account_id" {
   type = string
 }

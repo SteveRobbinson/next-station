@@ -79,8 +79,6 @@ resource "aws_route_table_association" "public_assoc" {
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.databricks_vpc.id
 
-  # Usunięto trasę do NAT Gateway - będzie dodawana przez stack runtime
-
   tags = {
     Name    = "${var.workspace_name}-private-rt"
     Project = "next-station"
@@ -98,9 +96,8 @@ resource "aws_route_table_association" "private_assoc_b" {
 }
 
 resource "aws_security_group" "databricks_sg" {
-  name        = "${var.workspace_name}-sg"
-  description = "Security Group dla wewnetrznej komunikacji klastrow Databricks"
-  vpc_id      = aws_vpc.databricks_vpc.id
+  name   = "${var.workspace_name}-sg"
+  vpc_id = aws_vpc.databricks_vpc.id
 
   ingress {
     from_port = 0
@@ -110,7 +107,6 @@ resource "aws_security_group" "databricks_sg" {
   }
 
   egress {
-    description = "Wyjscie na swiat (NAT / Internet)"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
