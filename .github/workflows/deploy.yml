@@ -49,7 +49,13 @@ jobs:
           terraform -chdir=terraform/runtime validate
           terraform -chdir=terraform/runtime apply -auto-approve
 
+      - name: Export workspace variables
+        run: |
+          WORKSPACE_HOST="$(terraform -chdir=terraform/core/workspace output -raw workspace_url)"
+          SQL_WAREHOUSE_ID="$(terraform -chdir=terraform/core/workspace-resources output -raw sql_warehouse_id)"
 
+          echo "DATABRICKS_HOST=$WORKSPACE_HOST" >> "$GITHUB_ENV"
+          echo "BUNDLE_VAR_sql_warehouse_id=$SQL_WAREHOUSE_ID" >> "$GITHUB_ENV"
 
       - name: Install build tools
         run: pip install build wheel
