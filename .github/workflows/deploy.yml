@@ -35,6 +35,13 @@ jobs:
           terraform -chdir=terraform/core/workspace validate
           terraform -chdir=terraform/core/workspace apply -auto-approve
 
+      - name: Deploy workspace-resources
+        run: |
+          terraform -chdir=terraform/core/workspace-resources fmt -check
+          terraform -chdir=terraform/core/workspace-resources init
+          terraform -chdir=terraform/core/workspace-resources validate
+          terraform -chdir=terraform/core/workspace-resources apply -auto-approve
+
 
 
       - name: Install build tools
