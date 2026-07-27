@@ -10,6 +10,20 @@ jobs:
       DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
       DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
 
+      TF_VAR_databricks_account_id: ${{ secrets.DATABRICKS_ACCOUNT_ID }}
+      TF_VAR_databricks_client_id: ${{ secrets.DATABRICKS_CLIENT_ID }}
+      TF_VAR_databricks_client_secret: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+      TF_VAR_databricks_admin_email: ${{ secrets.DATABRICKS_ADMIN_EMAIL }}
+      TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+      TF_VAR_workspace_name: ${{ vars.WORKSPACE_NAME }}
+      TF_VAR_cross_account_role_name: ${{ vars.CROSS_ACCOUNT_ROLE_NAME }}
+      TF_VAR_root_bucket_name: ${{ vars.ROOT_BUCKET_NAME }}
+      TF_VAR_vpc_cidr: ${{ vars.VPC_CIDR }}
+      TF_VAR_public_subnet_cidr: ${{ vars.PUBLIC_SUBNET_CIDR }}
+      TF_VAR_private_subnet_a_cidr: ${{ vars.PRIVATE_SUBNET_A_CIDR }}
+      TF_VAR_private_subnet_b_cidr: ${{ vars.PRIVATE_SUBNET_B_CIDR }}
+
     steps:
       - uses: actions/checkout@v6
 
