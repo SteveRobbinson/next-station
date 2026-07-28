@@ -34,3 +34,10 @@ resource "databricks_service_principal_federation_policy" "this" {
     "subject" : "repo:${var.github_org}/${var.github_repo}:environment:prod"
   }
 }
+
+resource "databricks_mws_permission_assignment" "add_gh_actions_sp" {
+  provider     = databricks.mws
+  workspace_id = databricks_mws_workspaces.this.workspace_id
+  principal_id = databricks_service_principal.github_actions.id
+  permissions  = ["ADMIN"]
+}
