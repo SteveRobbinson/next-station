@@ -9,8 +9,7 @@ terraform {
 }
 
 provider "databricks" {
-  alias         = "workspace"
-  host          = data.terraform_remote_state.workspace.outputs.workspace_url
-  client_id     = var.databricks_client_id
-  client_secret = var.databricks_client_secret
+  alias   = "workspace"
+  host    = data.terraform_remote_state.workspace.outputs.workspace_url
+  profile = "account"
 }
