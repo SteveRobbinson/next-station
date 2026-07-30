@@ -14,11 +14,3 @@ variable "workspace_name" {
 variable "gh_actions_service_principal" {
   type = string
 }
-
-variable "github_org" {
-  type = string
-}
-
-variable "github_repo" {
-  type = string
-}
