@@ -12,3 +12,8 @@ resource "databricks_service_principal_federation_policy" "this" {
     "subject" : "repo:${var.github_org}/${var.github_repo}:environment:prod"
   }
 }
+
+resource "databricks_service_principal_role" "tf_admin_account" {
+  service_principal_id = databricks_service_principal.github_actions.id
+  role                 = "account_admin"
+}
