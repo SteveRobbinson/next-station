@@ -19,11 +19,3 @@ resource "databricks_mws_permission_assignment" "add_user" {
   principal_id = data.terraform_remote_state.infrastructure.outputs.databricks_user_id
   permissions  = ["ADMIN"]
 }
-
-
-resource "databricks_mws_permission_assignment" "add_gh_actions_sp" {
-  provider     = databricks.mws
-  workspace_id = databricks_mws_workspaces.this.workspace_id
-  principal_id = data.terraform_remote_state.setup.outputs.gh_principal_id
-  permissions  = ["ADMIN"]
-}
