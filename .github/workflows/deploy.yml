@@ -14,6 +14,7 @@ jobs:
       DATABRICKS_AUTH_TYPE: github-oidc
       DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
       DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      DATABRICKS_ACCOUNT_ID: ${{ secrets.DATABRICKS_ACCOUNT_ID }}
 
       TF_VAR_databricks_account_id: ${{ secrets.DATABRICKS_ACCOUNT_ID }}
       TF_VAR_databricks_admin_email: ${{ secrets.DATABRICKS_ADMIN_EMAIL }}
