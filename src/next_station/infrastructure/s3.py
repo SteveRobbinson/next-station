@@ -1,10 +1,12 @@
-from __future__ import annotations
 import logging
+import io
+
 import boto3
+from botocore.exceptions import ClientError
+
 from next_station.core.exceptions.external import AWSServiceError
 from next_station.core.config.settings import settings
-from botocore.exceptions import ClientError
-import io
+
 
 logger = logging.getLogger(__name__)
 
