@@ -6,8 +6,6 @@ import boto3
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from mypy_boto3_s3 import S3Client
-from .runner import runner
-from next_station.schemas.worldpop import ApiMetadata, S3Etag
 from next_station.core.exceptions.external import AWSServiceError
 from next_station.core.config.settings import settings
 from botocore.exceptions import ClientError
@@ -49,32 +47,6 @@ class S3Manager:
                 return None
 
             raise AWSServiceError.from_exception(err) from err
-
-
-def compare_metadata(s3_metadata: dict | None,
-                     file_url: str
-                    ) -> bool:
-    
-    logger.info(f"Comparing metadata for {file_url}")
-
-    if not s3_metadata:
-        logger.warning(f"Comparison aborted: No metadata available for {file_url}")
-        return False
-
-    try:
-        api_response = runner(file_url, 'head')
-        api_etag = ApiMetadata(**api_response.headers).etag
-        aws_s3_etag = S3Etag(**s3_metadata).s3_etag
-
-        is_match = aws_s3_etag == api_etag
-        logger.info(f"Metadata match for {file_url}: {is_match}")
-        return is_match
-    
-
-    except Exception as err:
-        # Tutaj musze uzyc UnifiedAPIError zamiast AWSServiceError
-        raise AWSServiceError.from_exception(err) from err
-
 
 def upload_data_to_s3(bucket_name: str,
                       file_name: str,
