@@ -14,18 +14,18 @@ from botocore.exceptions import ClientError
 
 logger = logging.getLogger(__name__)
 
-def create_s3_client() -> S3Client:
+class S3Manager:
+    def __init__(self) -> None:
+        logger.info("Initializing S3 client")
 
-    logger.info("Started creating S3 client")
+        try:
+            s3 = boto3.client('s3')
+            s3.head_bucket(Bucket=settings.aws.s3_bucket_name)
+            logger.info("Successfully initialized S3 client")
+            self.s3 = s3
 
-    try:
-        s3 = boto3.client('s3')
-        s3.head_bucket(Bucket=settings.aws.s3_bucket_name)
-        logger.info("Successfully created S3 client")
-        return s3
-    
-    except Exception as err:
-        raise AWSServiceError.from_exception(err) from err
+        except Exception as err:
+            raise AWSServiceError.from_exception(err) from err
 
 
 def get_s3_object_metadata(s3client: S3Client,
