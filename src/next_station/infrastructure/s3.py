@@ -30,29 +30,25 @@ class S3Manager:
             raise AWSServiceError.from_exception(err) from err
 
 
-def get_s3_object_metadata(s3client: S3Client,
-                           aws_s3_bucket_name: str,
-                           metadata_file_path: str,
-                           ) -> dict | None:
+    def get_s3_object(self,
+                      file_path: str
+                      ) -> bytes | None:
 
-    logger.info(f"Retrieving metadata from {metadata_file_path}")
+        logger.info(f"Retrieving object from {file_path}")
 
-    try:
-        aws_response = s3client.get_object(
-            Bucket = aws_s3_bucket_name,
-            Key = metadata_file_path)
+        try:
+            aws_response = self.s3.get_object(
+                Bucket = self.aws_s3_bucket_name,
+                Key = file_path)
 
-        metadata = json.load(aws_response['Body'])
-        ### model pydantic, walidacja schematu json, do zrobienia
-        logger.info(f"Successfully retrieved metadata from {aws_s3_bucket_name}/{metadata_file_path}")
-        return metadata
+            logger.info(f"Successfully retrieved object from {self.aws_s3_bucket_name}/{file_path}")
+            return aws_response['Body'].read()
+        
+        except ClientError as err:
+            if err.response['Error']['Code'] == 'NoSuchKey':
+                return None
 
-    
-    except ClientError as err:
-        if err.response['Error']['Code'] == 'NoSuchKey':
-            return None
-
-        raise AWSServiceError.from_exception(err) from err
+            raise AWSServiceError.from_exception(err) from err
 
 
 def compare_metadata(s3_metadata: dict | None,
