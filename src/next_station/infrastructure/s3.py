@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 from next_station.core.exceptions.external import AWSServiceError
 from next_station.core.config.settings import settings
 from botocore.exceptions import ClientError
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -48,37 +49,36 @@ class S3Manager:
 
             raise AWSServiceError.from_exception(err) from err
 
-def upload_data_to_s3(bucket_name: str,
-                      file_name: str,
-                      object_to_upload: SupportsRead,
-                      s3_client: S3Client,
-                      metadata: dict | None = None
-                      ) -> bool:
+    def upload_data_to_s3(self,
+                          file_name: str,
+                          object_to_upload: io.BytesIO,
+                          metadata: dict | None = None
+                          ) -> bool:
 
-    logger.info(f"Starting uploading {file_name} to bucket {bucket_name}")
-    extra_args = {'Metadata': metadata} if metadata else {}
+        logger.info(f"Starting uploading {file_name} to bucket {self.aws_s3_bucket_name}")
+        extra_args = {'Metadata': metadata} if metadata else {}
 
-    try:
-        logger.info(f"Uploading object to S3: {file_name}")
-        s3_client.upload_fileobj(Bucket = bucket_name,
-                             Fileobj = object_to_upload,
-                             Key = file_name,
-                             ExtraArgs = extra_args)
-        
-        if metadata:
-            metadata_content = json.dumps(metadata).encode('utf-8')
-            metadata_key = f"{file_name}/metadata.json"
-            logger.info(f"Uploading metadata file to S3: {metadata_key}")
-            s3_client.put_object(
-                    Bucket = bucket_name,
-                    Key = metadata_key,
-                    Body = metadata_content
-                    )
+        try:
+            logger.info(f"Uploading object to S3: {file_name}")
+            self.s3.upload_fileobj(Bucket = self.aws_s3_bucket_name,
+                                   Fileobj = object_to_upload,
+                                   Key = file_name,
+                                   ExtraArgs = extra_args)
+            
+            if metadata:
+                metadata_content = json.dumps(metadata).encode('utf-8')
+                metadata_key = f"{file_name}/metadata.json"
+                logger.info(f"Uploading metadata file to S3: {metadata_key}")
+                s3_client.put_object(
+                        Bucket = bucket_name,
+                        Key = metadata_key,
+                        Body = metadata_content
+                        )
 
 
-        logger.info(f"Successfully finished all upload operations for {file_name}")
-        return True
+            logger.info(f"Successfully finished all upload operations for {file_name}")
+            return True
 
-    except Exception as err:
-        logger.exception(f"Critical failure during S3 upload of {file_name}")
-        raise AWSServiceError.from_exception(err) from err
+        except Exception as err:
+            logger.exception(f"Critical failure during S3 upload of {file_name}")
+            raise AWSServiceError.from_exception(err) from err
