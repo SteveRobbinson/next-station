@@ -1,11 +1,6 @@
 from __future__ import annotations
 import logging
-from next_station.core.types import SupportsRead
-import json
 import boto3
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from mypy_boto3_s3 import S3Client
 from next_station.core.exceptions.external import AWSServiceError
 from next_station.core.config.settings import settings
 from botocore.exceptions import ClientError
