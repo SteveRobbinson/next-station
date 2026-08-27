@@ -60,20 +60,8 @@ class S3Manager:
                                    Key = file_name,
                                    ExtraArgs = extra_args)
             
-            if metadata:
-                metadata_content = json.dumps(metadata).encode('utf-8')
-                metadata_key = f"{file_name}/metadata.json"
-                logger.info(f"Uploading metadata file to S3: {metadata_key}")
-                s3_client.put_object(
-                        Bucket = bucket_name,
-                        Key = metadata_key,
-                        Body = metadata_content
-                        )
-
-
             logger.info(f"Successfully finished all upload operations for {file_name}")
             return True
 
         except Exception as err:
-            logger.exception(f"Critical failure during S3 upload of {file_name}")
             raise AWSServiceError.from_exception(err) from err
