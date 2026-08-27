@@ -44,6 +44,7 @@ class S3Manager:
 
             raise AWSServiceError.from_exception(err) from err
 
+
     def upload_data_to_s3(self,
                           file_name: str,
                           object_to_upload: io.BytesIO,
@@ -54,7 +55,6 @@ class S3Manager:
         extra_args = {'Metadata': metadata} if metadata else {}
 
         try:
-            logger.info(f"Uploading object to S3: {file_name}")
             self.s3.upload_fileobj(Bucket = self.aws_s3_bucket_name,
                                    Fileobj = object_to_upload,
                                    Key = file_name,
