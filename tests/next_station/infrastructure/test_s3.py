@@ -20,3 +20,14 @@ def test_s3manager_init_success(mock_s3_env):
 
     assert manager.aws_s3_bucket_name == mock_s3_env
     assert manager.s3 is not None
+
+
+def test_s3manager_get_object_returns_bytes_when_file_exists(mock_s3_env):
+    boto3.client('s3').put_object(Bucket=mock_s3_env,
+                                  Body=b"test data",
+                                  Key='valid/file/path')
+    manager = S3Manager(mock_s3_env)
+    
+    result = manager.get_s3_object('valid/file/path')
+
+    assert result == b"test data"
