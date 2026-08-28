@@ -5,7 +5,6 @@ import boto3
 from botocore.exceptions import ClientError
 
 from next_station.core.exceptions.external import AWSServiceError
-from next_station.core.config.settings import settings
 
 
 logger = logging.getLogger(__name__)
