@@ -16,7 +16,7 @@ class S3Manager:
 
         try:
             s3 = boto3.client('s3')
-            s3.head_bucket(Bucket=settings.aws.s3_bucket_name)
+            s3.head_bucket(Bucket=aws_s3_bucket_name)
             logger.info("Successfully initialized S3 client")
 
             self.s3 = s3
