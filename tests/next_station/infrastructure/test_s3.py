@@ -31,3 +31,11 @@ def test_s3manager_get_object_returns_bytes_when_file_exists(mock_s3_env):
     result = manager.get_s3_object('valid/file/path')
 
     assert result == b"test data"
+
+
+def test_s3manager_get_object_returns_none_when_file_is_missing(mock_s3_env):
+   manager = S3Manager(mock_s3_env)
+
+   result = manager.get_s3_object('invalid/file/path')
+
+   assert result is None
