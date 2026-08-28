@@ -1,3 +1,5 @@
+import io
+
 import pytest
 import boto3
 from moto import mock_aws
@@ -39,3 +41,13 @@ def test_s3manager_get_object_returns_none_when_file_is_missing(mock_s3_env):
    result = manager.get_s3_object('invalid/file/path')
 
    assert result is None
+
+
+def test_s3manager_upload_data_to_s3(mock_s3_env):
+    manager = S3Manager(mock_s3_env)
+    is_uploaded = manager.upload_data_to_s3(file_name='test-file-name', object_to_upload=io.BytesIO(b"test data"))
+
+    result = boto3.client('s3').get_object(Bucket=mock_s3_env, Key='test-file-name')
+
+    assert is_uploaded is True
+    assert result['Body'].read() == b"test data"
