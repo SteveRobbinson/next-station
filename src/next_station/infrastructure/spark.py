@@ -40,3 +40,20 @@ class SparkManager:
         except Exception as err:
             raise RuntimeError() from err
 
+
+    @staticmethod
+    def save_df_in_databricks(df: DataFrame,
+                              table_name: str,
+                              save_format: str = 'delta',
+                              save_mode: str = 'append',
+                              merge_schema: bool = False) -> None:
+
+        logger.info(f"Starting write to table: {table_name} (format: {save_format}, mode: {save_mode})")
+        
+        try:
+            df.write.format(save_format).mode(save_mode).option('mergeSchema', merge_schema).saveAsTable(table_name)
+            logger.info(f"Table {table_name} saved successfully")
+
+        except Exception as err:
+            logger.exception(f"Error occurred while saving table {table_name} to databricks")
+            raise RuntimeError() from err
