@@ -3,6 +3,7 @@ from typing import Literal
 
 from pyspark.sql import SparkSession, DataFrame
 
+from next_station.core.exceptions.spark import SparkInitError, SparkReadError, SparkSaveError
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,8 @@ class SparkManager:
             logger.info("Successfully intialized spark session")
 
         except Exception as err:
-            raise RuntimeError() from err
+            logger.exception("Error occurred while initializing spark session")
+            raise SparkInitError() from err
 
 
     def read_from_s3(self,
@@ -38,7 +40,8 @@ class SparkManager:
             return df
 
         except Exception as err:
-            raise RuntimeError() from err
+            logger.exception("Error occurred while reading from S3")
+            raise SparkReadError() from err
 
 
     @staticmethod
@@ -56,4 +59,4 @@ class SparkManager:
 
         except Exception as err:
             logger.exception(f"Error occurred while saving table {table_name} to databricks")
-            raise RuntimeError() from err
+            raise SparkSaveError() from err
