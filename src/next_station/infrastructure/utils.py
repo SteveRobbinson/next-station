@@ -1,8 +1,6 @@
 import logging
 import sys
 import time
-from next_station.core.exceptions.base import InfrastructureError
-from pyspark.sql import SparkSession
 
 logger = logging.getLogger(__name__)
 
@@ -17,34 +15,7 @@ def _perform_backoff(current_retry_count: int,
     time.sleep(sleep_time)
 
 
-def export_table_to_s3_parquet(spark: SparkSession,
-                               source_fqn: str,
-                               aws_bucket_uri: str):
-    
-    logger.info(f"Consolidating table {source_fqn} into a single parquet file at {aws_bucket_uri}")
-
-    try:
-        df = spark.table(source_fqn)
-        
-        (df.write
-         .mode('overwrite')
-         .format('parquet')
-         .save(aws_bucket_uri))
-            
-        logger.info(f"Successfully consolidated {source_fqn} into {aws_bucket_uri}")
-
-
-    except Exception as err:
-        logger.exception(f"Could not consolidate table {source_fqn} to S3 destination {aws_bucket_uri}. Spark job aborted.")
-        raise InfrastructureError(
-                source="### Parquet Consolidator ###",
-                status_code=500,
-                details=f"Infrastructure failure: Data consolidation for {source_fqn} failed."
-                ) from err
-
-
 def setup_logging() -> None:
-
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
