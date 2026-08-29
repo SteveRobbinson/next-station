@@ -1,15 +1,5 @@
 class BaseAppError(Exception):
-    def __init__(self, source: str, status_code: int, details: str):
-        self.source = source
-        self.status_code = status_code
-        self.details = details
-        
-        title = f"{source} - Status code: {status_code}\nDetails: {details}"
+    default_message = "An application error occured"
 
-        super().__init__(title)
-
-class UnifiedAPIError(BaseAppError):
-    pass
-
-class InfrastructureError(BaseAppError):
-    pass
+    def __init__(self, message: str | None = None):
+        super().__init__(message or self.default_message)
