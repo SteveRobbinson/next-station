@@ -4,7 +4,7 @@ import io
 import boto3
 from botocore.exceptions import ClientError
 
-from next_station.core.exceptions.external import AWSServiceError
+from next_station.core.exceptions.aws import AWSConfigError, AWSResponseError
 
 
 logger = logging.getLogger(__name__)
@@ -22,8 +22,8 @@ class S3Manager:
             self.aws_s3_bucket_name = aws_s3_bucket_name
 
         except Exception as err:
-            raise AWSServiceError.from_exception(err) from err
-
+            raise AWSConfigError() from err
+ 
 
     def get_s3_object(self,
                       file_path: str
@@ -43,7 +43,7 @@ class S3Manager:
             if err.response['Error']['Code'] == 'NoSuchKey':
                 return None
 
-            raise AWSServiceError.from_exception(err) from err
+            raise AWSResponseError() from err
 
 
     def upload_data_to_s3(self,
@@ -65,4 +65,4 @@ class S3Manager:
             return True
 
         except Exception as err:
-            raise AWSServiceError.from_exception(err) from err
+            raise AWSResponseError() from err
