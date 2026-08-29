@@ -1,10 +1,12 @@
 import logging
 import requests
+
 from requests.exceptions import HTTPError, Timeout, ConnectionError
+
 from next_station.core.config.settings import settings
+from next_station.core.exceptions.api import APIRelatedError, APIResponseError, APITimeoutError
 from next_station.infrastructure.utils import _perform_backoff
-from next_station.core.exceptions.external import APITimeoutError, APIResponseError
-from next_station.core.exceptions.base import UnifiedAPIError
+
 
 logger = logging.getLogger(__name__)
 
@@ -42,15 +44,13 @@ def runner(api_url: str,
             logger.info(f"Request to {api_url} succeeded")
             return response
 
-
         except (Timeout, ConnectionError) as err:
             if i == max_retries - 1:
-                raise APITimeoutError(api_url, str(err)) from err
+                raise APITimeoutError() from err
 
             logger.warning(f"Attempt {i + 1} failed. \nError: {type(err).__name__}\n{err}\nRetrying...")
             _perform_backoff(i)
             continue
-
 
         except HTTPError as err:
             status_code = err.response.status_code
@@ -60,6 +60,6 @@ def runner(api_url: str,
                 _perform_backoff(i)
                 continue
 
-            raise APIResponseError(response) from err
+            raise APIResponseError() from err
 
-    raise UnifiedAPIError(source = '### API ###', status_code = 500, details = 'Unhandled retry logic failure')
+    raise APIRelatedError()
