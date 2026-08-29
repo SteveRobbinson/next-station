@@ -60,3 +60,28 @@ class SparkManager:
         except Exception as err:
             logger.exception(f"Error occurred while saving table {table_name} to databricks")
             raise SparkSaveError() from err
+
+
+    def export_table_to_s3(self,
+                          table_name: str,
+                          aws_bucket_uri: str,
+                          write_mode: str = 'overwrite',
+                          data_format: str = 'parquet'
+                          ):
+
+        logger.info(f"Consolidating table {table_name} into a single parquet file at {aws_bucket_uri}")
+
+        try:
+            df = self.spark.table(table_name)
+            
+            (df.write
+             .mode(write_mode)
+             .format(data_format)
+             .save(aws_bucket_uri))
+                
+            logger.info(f"Successfully consolidated {table_name} into {aws_bucket_uri}")
+
+        except Exception as err:
+            logger.exception("Error occurred while exporting table to s3")
+            raise SparkSaveError() from err
+
