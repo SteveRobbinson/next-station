@@ -1,8 +1,8 @@
 import logging
-from next_station.providers.fetch_railway_stations import fetch_train_stations
+
 from next_station.core.config.settings import settings
-from next_station.infrastructure.s3 import create_s3_client, upload_data_to_s3
-from next_station.core.exceptions.base import BaseAppError, InfrastructureError, UnifiedAPIError
+from next_station.infrastructure.s3 import S3Manager
+from next_station.infrastructure.runner import runner
 
 logger = logging.getLogger(__name__)
 
@@ -10,33 +10,21 @@ def ingest_railway_stations_to_s3():
     logger.info('Starting Railway Stations job')
 
     try:
+        s3 = S3Manager(settings.aws.s3_bucket_name)
 
-        s3 = create_s3_client()
-        train_stations = fetch_train_stations(str(settings.api.base_railway_stations_url), settings.api.payload_for_railway_stations)
-        upload_data_to_s3(settings.aws.s3_bucket_name,
-                          settings.aws.s3_railway_stations_file_name,
-                          train_stations.raw,
-                          s3)
+        logger.info("Fetching and uploading railway_stations to S3")
+        railway_stations = runner(api_url=str(settings.api.base_railway_stations_url),
+                                  method='post',
+                                  payload=settings.api.payload_for_railway_stations,
+                                  headers=settings.api.headers,
+                                  stream=True)
 
+        s3.upload_data_to_s3(file_name=settings.aws.s3_railway_stations_file_name, object_to_upload=railway_stations.raw)
         logger.info('Successfully updated railway stations in S3.')
 
-
-    except (InfrastructureError, UnifiedAPIError) as known_err:
-        
-        logger.error(f"Job failed due to known error in {known_err.source}: {known_err.details}")
+    except Exception:
+        logger.exception("Job failed due to an error")
         raise
-        
-
-    except Exception as err:
-
-        msg = 'Unexpected failure in Railway Stations job'
-        logger.exception(msg)
-        raise BaseAppError(
-            source="### RailwayStationsJob ###",
-            status_code=500,
-            details=f"{msg}: {str(err)}"
-        ) from err
-
 
 if __name__ == "__main__":
     ingest_railway_stations_to_s3()
