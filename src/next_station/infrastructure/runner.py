@@ -1,14 +1,24 @@
 import logging
 import requests
+import time
 
 from requests.exceptions import HTTPError, Timeout, ConnectionError
 
 from next_station.core.config.settings import settings
 from next_station.core.exceptions.api import APIRelatedError, APIResponseError, APITimeoutError
-from next_station.infrastructure.utils import _perform_backoff
-
 
 logger = logging.getLogger(__name__)
+
+
+def _perform_backoff(current_retry_count: int,
+                     base_delay: int = 1,
+                     backoff_factor: int = 5,
+                     max_delay: int = 60):
+
+    delay = base_delay + (backoff_factor ** current_retry_count)
+    sleep_time = min(delay, max_delay)
+
+    time.sleep(sleep_time)
 
 def runner(api_url: str,
            method: str,
