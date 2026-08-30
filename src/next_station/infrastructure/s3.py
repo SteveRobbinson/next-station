@@ -49,11 +49,11 @@ class S3Manager:
     def upload_data_to_s3(self,
                           file_name: str,
                           object_to_upload: io.BytesIO,
-                          metadata: dict | None = None
+                          metadata: str | None = None
                           ) -> bool:
 
         logger.info(f"Starting uploading {file_name} to bucket {self.aws_s3_bucket_name}")
-        extra_args = {'Metadata': metadata} if metadata else {}
+        extra_args = {'Metadata': {'id': metadata}} if metadata else {}
 
         try:
             self.s3.upload_fileobj(Bucket = self.aws_s3_bucket_name,
