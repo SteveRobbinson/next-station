@@ -2,6 +2,7 @@ import logging
 from typing import Literal
 
 from pyspark.sql import SparkSession, DataFrame
+from sedona.spark import SedonaContext
 
 from next_station.core.exceptions.spark import SparkInitError, SparkReadError, SparkSaveError
 
@@ -13,6 +14,7 @@ class SparkManager:
 
         try:
             self.spark = SparkSession.builder.getOrCreate()
+            self.spark = SedonaContext.create(self.spark)
             self.spark.range(1).count()
 
             logger.info("Successfully intialized spark session")
