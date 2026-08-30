@@ -1,7 +1,5 @@
 import logging
 
-from sedona.spark import SedonaContext
-
 from next_station.infrastructure.spark import SparkManager
 from next_station.core.config.settings import settings
 from next_station.quality.extract_population_grid import extract_population_points
@@ -14,7 +12,6 @@ def load_population_grid_to_databricks():
     try:
 
         spark = SparkManager()
-        spark_session = SedonaContext.create(spark.spark)
 
         logger.info(f"Ingesting raw data from {settings.aws.population_grid_uri}")
         raw_df = spark.read_from_s3(aws_s3_path=settings.aws.population_grid_uri, data_format='binaryFile')
