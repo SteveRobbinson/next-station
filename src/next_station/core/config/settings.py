@@ -1,13 +1,21 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import computed_field
+from pydantic import computed_field, BaseModel
+
 from next_station.core.config.databricks import DatabricksConfig
 from next_station.core.config.aws import AWSConfig
 from next_station.core.config.api import ApiRequestsConfig
-from next_station.core.config.base import ExportTask
-from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[4]
 ENV_PATH = ROOT_DIR / '.env'
+
+
+class ExportTask(BaseModel):
+    name: str
+    databricks_fqn: str
+    aws_target_uri: str
+
 
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(env_file=ENV_PATH, env_file_encoding='utf-8', env_nested_delimiter='__')
