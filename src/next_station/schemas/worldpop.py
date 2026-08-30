@@ -1,5 +1,6 @@
-from pydantic import BaseModel, BeforeValidator, Field, ConfigDict, AliasChoices, AfterValidator, AliasPath
 from typing import Annotated, Any
+
+from pydantic import BaseModel, BeforeValidator, Field, ConfigDict, AliasChoices, AfterValidator, AliasPath
 
 def ensure_one_element(value: Any) -> str:
     if isinstance(value, list):
