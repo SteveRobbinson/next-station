@@ -66,3 +66,21 @@ class S3Manager:
 
         except Exception as err:
             raise AWSResponseError() from err
+
+
+    def get_object_metadata(self,
+                            file_path: str) -> str | None:
+
+        try:
+            logger.info(f"Retrieving metadata from {file_path}")
+            response = self.s3.head_object(Bucket=self.aws_s3_bucket_name,
+                                           Key=file_path)
+
+            file_id = response.get('Metadata', {}).get('id')
+
+            logger.info("Successfully retrieved file id")
+            return file_id
+
+        except Exception as err:
+            raise AWSResponseError(f"An error occurred while retrieving metadata from {file_path}") from err
+        
