@@ -81,6 +81,17 @@ class S3Manager:
             logger.info("Successfully retrieved file id")
             return file_id
 
+        except ClientError as err:
+            error_code = err.response['Error']['Code']
+
+            if error_code == '404':
+                logger.info("HeadObject not found, returning None")
+                return None
+            
+            else:
+                logger.exception("An unexpected error occurred while sending request to S3")
+                raise
+
         except Exception as err:
             raise AWSResponseError(f"An error occurred while retrieving metadata from {file_path}") from err
         
