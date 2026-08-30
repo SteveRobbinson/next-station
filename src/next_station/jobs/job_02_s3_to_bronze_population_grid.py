@@ -2,7 +2,7 @@ import logging
 
 from next_station.infrastructure.spark import SparkManager
 from next_station.core.config.settings import settings
-from next_station.quality.extract_population_grid import extract_population_points
+from next_station.transformations.spark_helpers import extract_population_points
 
 logger = logging.getLogger(__name__)
 
