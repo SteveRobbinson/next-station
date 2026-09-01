@@ -1,6 +1,15 @@
 from typing import Annotated, Any
 
-from pydantic import BaseModel, BeforeValidator, Field, ConfigDict, AliasChoices, AfterValidator, AliasPath
+from pydantic import (
+    AfterValidator,
+    AliasChoices,
+    AliasPath,
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+)
+
 
 def ensure_one_element(value: Any) -> str:
     if isinstance(value, list):
@@ -15,11 +24,12 @@ def ensure_one_element(value: Any) -> str:
 
 
 class FileUrl(BaseModel):
-    file_url: Annotated[str, BeforeValidator(ensure_one_element), Field(alias='files')]
+    file_url: Annotated[str, BeforeValidator(ensure_one_element), Field(alias="files")]
 
 
 class GetFileUrl(BaseModel):
-    list_url: Annotated[list[FileUrl], Field(alias='data', min_length = 1)]
+    list_url: Annotated[list[FileUrl], Field(alias="data", min_length=1)]
+
     def __getitem__(self, index):
         return self.list_url[index].file_url
 
@@ -34,10 +44,14 @@ def ensure_string(value: Any) -> str:
 
 class ApiMetadata(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    etag: Annotated[str,
-                    Field(validation_alias=AliasChoices('ETag', 'etag', 'Etag')),
-                    AfterValidator(ensure_string)]
+    etag: Annotated[
+        str,
+        Field(validation_alias=AliasChoices("ETag", "etag", "Etag")),
+        AfterValidator(ensure_string),
+    ]
 
 
 class S3Etag(BaseModel):
-    s3_etag: Annotated[str, AfterValidator(ensure_string), Field(AliasPath('Metadata', 'ETag'))]
+    s3_etag: Annotated[
+        str, AfterValidator(ensure_string), Field(AliasPath("Metadata", "ETag"))
+    ]

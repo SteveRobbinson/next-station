@@ -14,12 +14,13 @@ def setup_logging() -> None:
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
         handlers=[logging.StreamHandler(sys.stdout)],
-        force=True
-        )
+        force=True,
+    )
+
 
 def get_api_object_metadata(file_url: str) -> str:
     try:
-        api_response = runner(file_url, 'head')
+        api_response = runner(file_url, "head")
         api_metadata = ApiMetadata(**api_response.headers).etag
 
         return api_metadata
