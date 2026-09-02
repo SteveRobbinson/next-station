@@ -1,4 +1,4 @@
-from typing import Annotated, Any
+from typing import Annotated
 
 from pydantic import (
     AfterValidator,
@@ -11,7 +11,7 @@ from pydantic import (
 )
 
 
-def ensure_one_element(value: Any) -> str:
+def ensure_one_element(value: list[str] | str) -> str:
     if isinstance(value, list):
         if len(value) != 1:
             raise ValueError(f"Expected one file url, got: {len(value)}.")
