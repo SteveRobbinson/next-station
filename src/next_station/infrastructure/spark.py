@@ -2,7 +2,7 @@ import logging
 from typing import Literal
 
 from pyspark.sql import DataFrame, SparkSession
-from sedona.spark import SedonaContext
+from sedona.spark.SedonaContext import SedonaContext
 
 from next_station.core.exceptions.spark import (
     SparkInitError,
@@ -83,7 +83,7 @@ class SparkManager:
         aws_bucket_uri: str,
         write_mode: str = "overwrite",
         data_format: str = "parquet",
-    ):
+    ) -> None:
 
         logger.info(
             f"Consolidating table {table_name} into a single parquet file at {aws_bucket_uri}"
