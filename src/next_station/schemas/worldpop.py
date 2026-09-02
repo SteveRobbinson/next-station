@@ -30,16 +30,12 @@ class FileUrl(BaseModel):
 class GetFileUrl(BaseModel):
     list_url: Annotated[list[FileUrl], Field(alias="data", min_length=1)]
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> str:
         return self.list_url[index].file_url
 
 
-def ensure_string(value: Any) -> str:
-    if isinstance(value, str):
-        return value.strip().strip('"')
-
-    else:
-        return value
+def clean_string(value: str) -> str:
+    return value.strip(' \t\n\r"')
 
 
 class ApiMetadata(BaseModel):
@@ -47,11 +43,11 @@ class ApiMetadata(BaseModel):
     etag: Annotated[
         str,
         Field(validation_alias=AliasChoices("ETag", "etag", "Etag")),
-        AfterValidator(ensure_string),
+        AfterValidator(clean_string),
     ]
 
 
 class S3Etag(BaseModel):
     s3_etag: Annotated[
-        str, AfterValidator(ensure_string), Field(AliasPath("Metadata", "ETag"))
+        str, AfterValidator(clean_string), Field(AliasPath("Metadata", "ETag"))
     ]
