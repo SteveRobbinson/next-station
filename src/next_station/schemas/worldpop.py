@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Annotated
 
 from pydantic import (
@@ -11,16 +12,14 @@ from pydantic import (
 )
 
 
-def ensure_one_element(value: list[str] | str) -> str:
-    if isinstance(value, list):
-        if len(value) != 1:
-            raise ValueError(f"Expected one file url, got: {len(value)}.")
-
-        else:
-            return value[0]
-
-    else:
+def ensure_one_element(value: Sequence[str] | str) -> str:
+    if isinstance(value, str):
         return value
+
+    if len(value) != 1:
+        raise ValueError(f"Expected one file url, got: {len(value)}.")
+
+    return value[0]
 
 
 class FileUrl(BaseModel):
