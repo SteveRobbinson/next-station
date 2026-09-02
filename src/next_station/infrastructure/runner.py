@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Any
 
 import requests
 from requests.exceptions import ConnectionError, HTTPError, Timeout
@@ -19,7 +20,7 @@ def _perform_backoff(
     base_delay: int = 1,
     backoff_factor: int = 5,
     max_delay: int = 60,
-):
+) -> None:
 
     delay = base_delay + (backoff_factor**current_retry_count)
     sleep_time = min(delay, max_delay)
@@ -31,12 +32,12 @@ def runner(
     api_url: str,
     method: str,
     payload: str | None = None,
-    headers: dict | None = None,
+    headers: dict[str, str] | None = None,
     stream: bool = False,
     redirect: bool = False,
     timeout: int = 60,
     max_retries: int = 3,
-    **kwargs,
+    **kwargs: Any,
 ) -> requests.Response:
 
     method = method.upper()
