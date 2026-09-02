@@ -11,4 +11,8 @@ repos:
     hooks:
       - id: mypy
         args: [--strict, --ignore-missing-imports]
-        additional_dependencies: [pydantic, types-requests]
+        additional_dependencies:
+          - pydantic
+          - pydantic-settings
+          - types-requests
+          - boto3-stubs[s3]
