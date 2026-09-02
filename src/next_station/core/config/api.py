@@ -1,3 +1,5 @@
+from collections.abs import Mapping
+
 from pydantic import BaseModel, HttpUrl
 
 
@@ -12,5 +14,5 @@ class ApiRequestsConfig(BaseModel):
     referer: str
 
     @property
-    def headers(self) -> dict[str, str]:
+    def headers(self) -> Mapping[str, str]:
         return {"User-Agent": self.user_agent, "Referer": self.referer}

@@ -1,5 +1,6 @@
 import logging
 import time
+from collections.abc import Mapping
 from typing import Any
 
 import requests
@@ -32,7 +33,7 @@ def runner(
     api_url: str,
     method: str,
     payload: str | None = None,
-    headers: dict[str, str] | None = None,
+    headers: Mapping[str, str] | None = None,
     stream: bool = False,
     redirect: bool = False,
     timeout: int = 60,
