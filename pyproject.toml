@@ -30,8 +30,12 @@ publish_serving_data = "next_station.jobs.publish_serving_data:run_export_job"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-next_station = ["core/data/*.json"]
-
 [tool.mypy]
+python_version = "3.12"
+strict = true
 plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+explicit_package_bases = true
+mypy_path = ["src"]
