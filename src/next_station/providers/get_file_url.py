@@ -7,7 +7,7 @@ from next_station.schemas.worldpop import GetFileUrl
 logger = logging.getLogger(__name__)
 
 
-def get_file_url(api_url: str, index: int = -1, redirect=True) -> str:
+def get_file_url(api_url: str, index: int = -1, redirect: bool = True) -> str:
 
     logger.info(f"Retrieving file_url from {api_url}")
 

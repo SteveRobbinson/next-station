@@ -7,7 +7,7 @@ from next_station.transformations.spark_helpers import explode_and_flatten
 logger = logging.getLogger(__name__)
 
 
-def load_railway_stations_to_databricks():
+def load_railway_stations_to_databricks() -> None:
     logger.info("Initiating railway stations load to Databricks Bronze layer")
 
     try:

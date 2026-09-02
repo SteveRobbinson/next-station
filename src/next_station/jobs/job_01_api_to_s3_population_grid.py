@@ -9,7 +9,7 @@ from next_station.providers.get_file_url import get_file_url
 logger = logging.getLogger(__name__)
 
 
-def ingest_population_grid_to_s3():
+def ingest_population_grid_to_s3() -> None:
     logger.info("Starting Population Grid job")
 
     try:

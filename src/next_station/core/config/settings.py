@@ -44,4 +44,4 @@ class AppConfig(BaseSettings):
         ]
 
 
-settings = AppConfig()  # type: ignore
+settings = AppConfig()  # pyright: ignore[reportCallIssue]  #type: ignore

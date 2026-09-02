@@ -1,5 +1,5 @@
-import io
 import logging
+from typing import Any
 
 import boto3
 from botocore.exceptions import ClientError
@@ -45,7 +45,7 @@ class S3Manager:
             raise AWSResponseError() from err
 
     def upload_data_to_s3(
-        self, file_name: str, object_to_upload: io.BytesIO, metadata: str | None = None
+        self, file_name: str, object_to_upload: Any, metadata: str | None = None
     ) -> bool:
 
         logger.info(

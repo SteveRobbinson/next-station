@@ -6,7 +6,7 @@ from next_station.infrastructure.spark import SparkManager
 logger = logging.getLogger(__name__)
 
 
-def run_export_job():
+def run_export_job() -> None:
     tasks = settings.export_tasks
     logger.info(f"Starting export job for {len(tasks)} tasks")
 

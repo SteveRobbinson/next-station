@@ -7,7 +7,7 @@ from next_station.infrastructure.s3 import S3Manager
 logger = logging.getLogger(__name__)
 
 
-def ingest_railway_stations_to_s3():
+def ingest_railway_stations_to_s3() -> None:
     logger.info("Starting Railway Stations job")
 
     try:

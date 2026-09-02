@@ -7,7 +7,7 @@ from next_station.transformations.spark_helpers import extract_population_points
 logger = logging.getLogger(__name__)
 
 
-def load_population_grid_to_databricks():
+def load_population_grid_to_databricks() -> None:
     logger.info("Initiating population grid load to Databricks Bronze layer")
 
     try:
