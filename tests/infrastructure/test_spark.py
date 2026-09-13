@@ -3,16 +3,18 @@ from unittest.mock import MagicMock
 from next_station.infrastructure.spark import SparkManager
 
 
-def test_verify_binary_reads(tmp_path):
-    file_path = tmp_path / "binary_data"
-    file_path.write_bytes(b"test data")
+def test_verify_binary_reads() -> None:
+    file_path = "test/path/binary_data"
+    mock_session = MagicMock()
+    mock_df = MagicMock()
+    mock_session.read.format.return_value.load.return_value = mock_df
+    spark = SparkManager(spark_session=mock_session, sedona_context=mock_session)
 
-    spark = SparkManager()
-    spark_read = spark.read_from_s3(
-        aws_s3_path=str(file_path), data_format="binaryFile"
-    ).first()["content"]
+    result = spark.read_from_s3(aws_s3_path=file_path, data_format="binaryFile")
 
-    assert spark_read == b"test data"
+    mock_session.read.format.assert_called_once_with("binaryFile")
+    mock_session.read.format.return_value.load.assert_called_once_with(file_path)
+    assert result == mock_df
 
 
 def test_verify_json_reads(tmp_path):
