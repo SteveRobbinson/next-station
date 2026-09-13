@@ -5,6 +5,7 @@ import boto3
 import pytest
 from moto import mock_aws
 
+from next_station.core.exceptions.aws import AWSConfigError
 from next_station.infrastructure.s3 import S3Manager
 
 
@@ -56,3 +57,8 @@ def test_s3manager_upload_data_to_s3(mock_s3_env: str) -> None:
 
     assert is_uploaded is True
     assert result["Body"].read() == b"test data"
+
+
+def test_s3manager_init_fails_when_bucket_does_not_exist(mock_s3_env: str) -> None:
+    with pytest.raises(AWSConfigError):
+        S3Manager(aws_s3_bucket_name="non-existent-bucket")
