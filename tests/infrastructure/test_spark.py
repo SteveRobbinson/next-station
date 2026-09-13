@@ -1,4 +1,3 @@
-import json
 from unittest.mock import MagicMock
 
 from next_station.infrastructure.spark import SparkManager
@@ -32,7 +31,7 @@ def test_verify_json_reads(tmp_path):
     assert spark_read == test_data
 
 
-def test_save_df_in_databricks():
+def test_save_df_in_databricks() -> None:
     mock_df = MagicMock()
     table_name = "silver.test_data"
 
