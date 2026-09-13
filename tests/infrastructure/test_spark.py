@@ -17,20 +17,25 @@ def test_verify_binary_reads() -> None:
     assert result == mock_df
 
 
-def test_verify_json_reads(tmp_path):
-    test_data = {"id": 5, "status": "active", "description": "test data"}
-
-    file_path = tmp_path / "test_data.json"
-    file_path.write_text(json.dumps(test_data, indent=4))
-
-    spark = SparkManager()
-    spark_read = (
-        spark.read_from_s3(aws_s3_path=str(file_path), data_format="json")
-        .first()
-        .asDict()
+def test_verify_json_reads() -> None:
+    file_path = "test_data.json"
+    mock_session = MagicMock()
+    mock_df = MagicMock()
+    mock_session.read.format.return_value.option.return_value.load.return_value = (
+        mock_df
     )
+    spark = SparkManager(spark_session=mock_session, sedona_context=mock_session)
 
-    assert spark_read == test_data
+    result = spark.read_from_s3(aws_s3_path=str(file_path), data_format="json")
+
+    mock_session.read.format.assert_called_once_with("json")
+    mock_session.read.format.return_value.option.assert_called_once_with(
+        "multiLine", "true"
+    )
+    mock_session.read.format.return_value.option.return_value.load.assert_called_once_with(
+        file_path
+    )
+    assert result == mock_df
 
 
 def test_save_df_in_databricks() -> None:
