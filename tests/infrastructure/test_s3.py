@@ -1,11 +1,14 @@
 import io
 from collections.abc import Generator
+from typing import Any, cast
 
 import boto3
 import pytest
+from botocore.exceptions import ClientError
 from moto import mock_aws
+from unitttest.mock import MagicMock
 
-from next_station.core.exceptions.aws import AWSConfigError
+from next_station.core.exceptions.aws import AWSConfigError, AWSResponseError
 from next_station.infrastructure.s3 import S3Manager
 
 
@@ -62,3 +65,25 @@ def test_s3manager_upload_data_to_s3(mock_s3_env: str) -> None:
 def test_s3manager_init_fails_when_bucket_does_not_exist(mock_s3_env: str) -> None:
     with pytest.raises(AWSConfigError):
         S3Manager(aws_s3_bucket_name="non-existent-bucket")
+
+
+def test_s3manager_get_object_raises_aws_response_error(
+    mock_s3_env: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manager = S3Manager(mock_s3_env)
+    error_response = {
+        "Error": {
+            "Code": "AccessDenied",
+            "Message": "User is not authorized to perform: GetObject",
+        }
+    }
+    simulated_error = ClientError(
+        error_response=cast(Any, error_response), operation_name="GetObject"
+    )
+
+    monkeypatch.setattr(
+        manager.s3, "get_object", MagicMock(side_effect=simulated_error)
+    )
+
+    with pytest.raises(AWSResponseError):
+        manager.get_s3_object(file_path="some/file/path")
