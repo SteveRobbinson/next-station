@@ -14,12 +14,16 @@ logger = logging.getLogger(__name__)
 
 
 class SparkManager:
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        spark_session: SparkSession | None = None,
+        sedona_context: SedonaContext | None = None,
+    ) -> None:
         logger.info("Initializing spark session")
 
         try:
-            self.spark = SparkSession.builder.getOrCreate()
-            self.spark = SedonaContext.create(self.spark)
+            self.spark = spark_session or SparkSession.builder.getOrCreate()
+            self.spark = sedona_context or SedonaContext.create(self.spark)
             self.spark.range(1).count()
 
             logger.info("Successfully intialized spark session")
