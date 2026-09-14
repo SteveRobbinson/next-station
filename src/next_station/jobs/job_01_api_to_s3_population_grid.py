@@ -1,10 +1,11 @@
 import logging
 
 from next_station.core.config.settings import settings
-from next_station.infrastructure.runner import runner
+from next_station.infrastructure.runner import execute_request
 from next_station.infrastructure.s3 import S3Manager
 from next_station.infrastructure.utils import get_api_object_metadata
 from next_station.providers.get_file_url import get_file_url
+from next_station.schemas.http import APIEndpointConfig
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +30,8 @@ def ingest_population_grid_to_s3() -> None:
                 "Change detected. Fetching and processing new population grid..."
             )
 
-            population_grid = runner(
-                api_url=population_grid_file_url, method="get", stream=True
-            )
+            api_endpoint = APIEndpointConfig(method="GET", url=population_grid_file_url)
+            population_grid = execute_request(api_endpoint)
 
             s3.upload_data_to_s3(
                 file_name=settings.aws.s3_population_grid_file_name,

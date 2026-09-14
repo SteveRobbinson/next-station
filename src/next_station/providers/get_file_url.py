@@ -1,7 +1,8 @@
 import logging
 
 from next_station.core.exceptions.api import APIResponseError
-from next_station.infrastructure.runner import runner
+from next_station.infrastructure.runner import execute_request
+from next_station.schemas.http import APIEndpointConfig
 from next_station.schemas.worldpop import GetFileUrl
 
 logger = logging.getLogger(__name__)
@@ -12,7 +13,10 @@ def get_file_url(api_url: str, index: int = -1, redirect: bool = True) -> str:
     logger.info(f"Retrieving file_url from {api_url}")
 
     try:
-        response = runner(api_url, "get", redirect=redirect)
+        api_endpoint = APIEndpointConfig(
+            method="GET", url=api_url, allow_redirects=True
+        )
+        response = execute_request(api_endpoint)
         response = response.json()
         result = GetFileUrl(**response)
 

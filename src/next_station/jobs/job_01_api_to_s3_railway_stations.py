@@ -1,8 +1,9 @@
 import logging
 
 from next_station.core.config.settings import settings
-from next_station.infrastructure.runner import runner
+from next_station.infrastructure.runner import execute_request
 from next_station.infrastructure.s3 import S3Manager
+from next_station.schemas.http import APIEndpointConfig
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +15,13 @@ def ingest_railway_stations_to_s3() -> None:
         s3 = S3Manager(settings.aws.s3_bucket_name)
 
         logger.info("Fetching and uploading railway_stations to S3")
-        railway_stations = runner(
-            api_url=str(settings.api.base_railway_stations_url),
-            method="post",
+        api_endpoint = APIEndpointConfig(
+            method="POST",
+            url=str(settings.api.base_railway_stations_url),
             payload=settings.api.payload_for_railway_stations,
-            headers=settings.api.headers,
-            stream=True,
         )
+
+        railway_stations = execute_request(api_endpoint)
 
         s3.upload_data_to_s3(
             file_name=settings.aws.s3_railway_stations_file_name,
