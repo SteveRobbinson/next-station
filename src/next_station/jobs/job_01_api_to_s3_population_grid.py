@@ -3,8 +3,7 @@ import logging
 from next_station.core.config.settings import settings
 from next_station.infrastructure.runner import execute_request
 from next_station.infrastructure.s3 import S3Manager
-from next_station.infrastructure.utils import get_api_object_metadata
-from next_station.providers.get_file_url import get_file_url
+from next_station.providers import population_grid
 from next_station.schemas.http import APIEndpointConfig
 
 logger = logging.getLogger(__name__)
@@ -15,28 +14,28 @@ def ingest_population_grid_to_s3() -> None:
 
     try:
         s3 = S3Manager(settings.aws.s3_bucket_name)
-        population_grid_file_url = get_file_url(
+        api_grid_url = population_grid.get_file_url(
             str(settings.api.base_population_grid_url)
         )
 
-        logger.info(f"Checking for updates at: {population_grid_file_url}")
-        s3_object_metadata = s3.get_object_metadata(
+        logger.info(f"Checking for updates at: {api_grid_url}")
+        s3_grid_metadata = s3.get_object_metadata(
             file_path=settings.aws.s3_population_grid_file_name
         )
-        api_object_metadata = get_api_object_metadata(population_grid_file_url)
+        api_grid_metadata = population_grid.fetch_metadata(api_grid_url)
 
-        if s3_object_metadata != api_object_metadata:
+        if s3_grid_metadata != api_grid_metadata:
             logger.info(
                 "Change detected. Fetching and processing new population grid..."
             )
 
-            api_endpoint = APIEndpointConfig(method="GET", url=population_grid_file_url)
-            population_grid = execute_request(api_endpoint)
+            api_endpoint = APIEndpointConfig(method="GET", url=api_grid_url)
+            population_grid_data = execute_request(api_endpoint)
 
             s3.upload_data_to_s3(
                 file_name=settings.aws.s3_population_grid_file_name,
-                object_to_upload=population_grid.raw,
-                metadata=api_object_metadata,
+                object_to_upload=population_grid_data.raw,
+                metadata=api_grid_metadata
             )
 
             logger.info("Successfully updated population grid in S3.")
