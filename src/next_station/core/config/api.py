@@ -1,4 +1,4 @@
-from collections.abs import Mapping
+from collections.abc import Mapping
 
 from pydantic import BaseModel, HttpUrl
 
