@@ -1,7 +1,7 @@
 import logging
 
 from next_station.core.config.settings import settings
-from next_station.infrastructure.runner import execute_request
+from next_station.infrastructure import http_client
 from next_station.infrastructure.s3 import S3Manager
 from next_station.schemas.http import APIEndpointConfig
 
@@ -21,7 +21,7 @@ def ingest_railway_stations_to_s3() -> None:
             data=settings.api.payload_for_railway_stations,
         )
 
-        railway_stations = execute_request(api_endpoint)
+        railway_stations = http_client.execute_request(api_endpoint)
 
         s3.upload_data_to_s3(
             file_name=settings.aws.s3_railway_stations_file_name,

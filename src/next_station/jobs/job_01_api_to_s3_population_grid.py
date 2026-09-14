@@ -1,7 +1,7 @@
 import logging
 
 from next_station.core.config.settings import settings
-from next_station.infrastructure.runner import execute_request
+from next_station.infrastructure import http_client
 from next_station.infrastructure.s3 import S3Manager
 from next_station.providers import population_grid
 from next_station.schemas.http import APIEndpointConfig
@@ -30,12 +30,12 @@ def ingest_population_grid_to_s3() -> None:
             )
 
             api_endpoint = APIEndpointConfig(method="GET", url=api_grid_url)
-            population_grid_data = execute_request(api_endpoint)
+            population_grid_data = http_client.execute_request(api_endpoint)
 
             s3.upload_data_to_s3(
                 file_name=settings.aws.s3_population_grid_file_name,
                 object_to_upload=population_grid_data.raw,
-                metadata=api_grid_metadata
+                metadata=api_grid_metadata,
             )
 
             logger.info("Successfully updated population grid in S3.")
