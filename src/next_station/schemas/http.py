@@ -6,11 +6,11 @@ from next_station.core.config.settings import settings
 from next_station.core.exceptions.api import APIRelatedError
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class APIEndpointConfig:
     method: Literal["GET", "POST", "HEAD"]
     url: str
-    payload: str | None = None
+    data: str | None = None
     headers: Mapping[str, str] | None = None
     stream: bool = True
     allow_redirects: bool = False
@@ -34,10 +34,4 @@ class APIEndpointConfig:
             )
 
     def get_request_config(self) -> Mapping[str, Any]:
-        config = asdict(self)
-
-        if self.payload:
-            config["data"] = self.payload
-            del config["payload"]
-
-        return config
+        return asdict(self)
