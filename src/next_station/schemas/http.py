@@ -9,8 +9,7 @@ from next_station.core.exceptions.api import APIRelatedError
 @dataclass(frozen=True)
 class APIEndpointConfig:
     method: Literal["GET", "POST", "HEAD"]
-    host_domain: str
-    endpoint: str
+    url: str
     payload: str | None = None
     headers: Mapping[str, str] | None = None
     stream: bool = True
@@ -27,11 +26,6 @@ class APIEndpointConfig:
                 )
             )
 
-        if not self.endpoint.startswith("/"):
-            raise (
-                APIRelatedError(f"Endpoint must start with '/', got {self.endpoint}")
-            )
-
         if self.timeout < 0:
             raise (
                 APIRelatedError(
@@ -41,8 +35,6 @@ class APIEndpointConfig:
 
     def get_request_config(self) -> Mapping[str, Any]:
         config = asdict(self)
-        config["url"] = self.host_domain + self.endpoint
-        del config["host_domain"], config["endpoint"]
 
         if self.payload:
             config["data"] = self.payload
