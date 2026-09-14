@@ -27,7 +27,7 @@ def _perform_backoff(
     time.sleep(sleep_time)
 
 
-def send_api_request(
+def execute_request(
     api_endpoint: APIEndpointConfig, max_retries: int = 3
 ) -> requests.Response:
 
