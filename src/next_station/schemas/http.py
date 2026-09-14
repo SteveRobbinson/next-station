@@ -8,7 +8,7 @@ class APIEndpointConfig(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     method: Literal["GET", "POST", "HEAD"]
-    url: HttpUrl
+    url: HttpUrl | str
     data: str | None = None
     headers: Mapping[str, str] | None = None
     stream: bool = True
