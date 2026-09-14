@@ -18,7 +18,7 @@ def ingest_railway_stations_to_s3() -> None:
         api_endpoint = APIEndpointConfig(
             method="POST",
             url=str(settings.api.base_railway_stations_url),
-            payload=settings.api.payload_for_railway_stations,
+            data=settings.api.payload_for_railway_stations,
         )
 
         railway_stations = execute_request(api_endpoint)
