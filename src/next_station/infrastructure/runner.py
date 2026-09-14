@@ -1,17 +1,15 @@
 import logging
 import time
-from collections.abc import Mapping
-from typing import Any
 
 import requests
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 
-from next_station.core.config.settings import settings
 from next_station.core.exceptions.api import (
     APIRelatedError,
     APIResponseError,
     APITimeoutError,
 )
+from next_station.schemas.http import APIEndpointConfig
 
 logger = logging.getLogger(__name__)
 
@@ -29,50 +27,16 @@ def _perform_backoff(
     time.sleep(sleep_time)
 
 
-def runner(
-    api_url: str,
-    method: str,
-    payload: str | None = None,
-    headers: Mapping[str, str] | None = None,
-    stream: bool = False,
-    redirect: bool = False,
-    timeout: int = 60,
-    max_retries: int = 3,
-    **kwargs: Any,
+def send_api_request(
+    api_endpoint: APIEndpointConfig, max_retries: int = 3
 ) -> requests.Response:
-
-    method = method.upper()
-
-    if method not in settings.api.allowed_methods:
-        raise (
-            ValueError(
-                f"Method {method} is not supported. Check allowed_methods in config."
-            )
-        )
-
-    if max_retries <= 0:
-        raise ValueError("Max retries must be a positive integer")
-
-    if payload:
-        if method in ("GET", "HEAD"):
-            kwargs.setdefault("params", payload)
-
-        elif method == "POST":
-            kwargs.setdefault("data", payload)
 
     for i in range(max_retries):
         try:
-            response = requests.request(
-                method,
-                url=api_url,
-                headers=settings.api.headers,
-                allow_redirects=redirect,
-                stream=stream,
-                timeout=timeout,
-                **kwargs,
-            )
+            api_endpoint_config = api_endpoint.get_request_config()
+            response = requests.request(**api_endpoint_config)
             response.raise_for_status()
-            logger.info(f"Request to {api_url} succeeded")
+            logger.info(f"Request to {api_endpoint_config['url']} succeeded")
             return response
 
         except (Timeout, ConnectionError) as err:
