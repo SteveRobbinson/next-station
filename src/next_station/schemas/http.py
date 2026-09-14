@@ -1,37 +1,19 @@
 from collections.abc import Mapping
-from dataclasses import asdict, dataclass
 from typing import Any, Literal
 
-from next_station.core.config.settings import settings
-from next_station.core.exceptions.api import APIRelatedError
+from pydantic import BaseModel, ConfigDict, HttpUrl, PositiveInt
 
 
-@dataclass(frozen=True, kw_only=True)
-class APIEndpointConfig:
+class APIEndpointConfig(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     method: Literal["GET", "POST", "HEAD"]
-    url: str
+    url: HttpUrl
     data: str | None = None
     headers: Mapping[str, str] | None = None
     stream: bool = True
     allow_redirects: bool = False
-    timeout: int = 60
-
-    def __post_init__(self) -> None:
-
-        method = self.method.upper()
-        if method not in settings.api.allowed_methods:
-            raise (
-                APIRelatedError(
-                    f"Method {method} is not supported. Check allowed methods in config."
-                )
-            )
-
-        if self.timeout < 0:
-            raise (
-                APIRelatedError(
-                    f"Timeout must be a positive integer, got {self.timeout}"
-                )
-            )
+    timeout: PositiveInt = 60
 
     def get_request_config(self) -> Mapping[str, Any]:
-        return asdict(self)
+        return self.model_dump(mode="json", exclude_none=True)
