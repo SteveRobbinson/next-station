@@ -13,6 +13,8 @@ from next_station.schemas.http import APIEndpointConfig
 
 logger = logging.getLogger(__name__)
 
+RETRYABLE_STATUS_CODES: frozenset[int] = frozenset({429, 500, 502, 503, 504})
+
 
 def _perform_backoff(
     current_retry_count: int,
@@ -52,7 +54,7 @@ def execute_request(
         except HTTPError as err:
             status_code = err.response.status_code
 
-            if status_code in [429, 500, 501, 502, 503, 504] and i < max_retries - 1:
+            if status_code in RETRYABLE_STATUS_CODES and i < max_retries - 1:
                 logger.warning(
                     f"Attempt {i + 1} failed with status {status_code}. Retrying..."
                 )
