@@ -1,12 +1,12 @@
 import io
 from collections.abc import Generator
 from typing import Any, cast
+from unittest.mock import MagicMock
 
 import boto3
 import pytest
 from botocore.exceptions import ClientError
 from moto import mock_aws
-from unitttest.mock import MagicMock
 
 from next_station.core.exceptions.aws import AWSConfigError, AWSResponseError
 from next_station.infrastructure.s3 import S3Manager
