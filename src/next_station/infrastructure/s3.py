@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import IO, Any, Protocol, cast
 
 import boto3
 from botocore.exceptions import ClientError
@@ -7,6 +7,10 @@ from botocore.exceptions import ClientError
 from next_station.core.exceptions.aws import AWSConfigError, AWSResponseError
 
 logger = logging.getLogger(__name__)
+
+
+class ReadableBinary(Protocol):
+    def read(self, size: int = -1) -> bytes: ...
 
 
 class S3Manager:
