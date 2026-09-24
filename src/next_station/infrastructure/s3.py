@@ -49,7 +49,10 @@ class S3Manager:
             raise AWSResponseError() from err
 
     def upload_data_to_s3(
-        self, file_name: str, object_to_upload: Any, metadata: str | None = None
+        self,
+        file_name: str,
+        object_to_upload: ReadableBinary,
+        metadata: str | None = None,
     ) -> bool:
 
         logger.info(
@@ -60,7 +63,7 @@ class S3Manager:
         try:
             self.s3.upload_fileobj(
                 Bucket=self.aws_s3_bucket_name,
-                Fileobj=object_to_upload,
+                Fileobj=cast(IO[Any], object_to_upload),
                 Key=file_name,
                 ExtraArgs=extra_args,
             )
